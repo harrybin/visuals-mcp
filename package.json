@@ -1,0 +1,40 @@
+{
+    "name": "mcp-table-server",
+    "version": "1.0.0",
+    "description": "MCP server providing interactive table visualization using TanStack Table",
+    "type": "module",
+    "main": "dist/server.js",
+    "scripts": {
+        "build": "vite build",
+        "serve": "tsx server.ts",
+        "dev": "concurrently \"vite build --watch\" \"tsx watch server.ts\""
+    },
+    "keywords": [
+        "mcp",
+        "mcp-server",
+        "mcp-apps",
+        "table",
+        "tanstack-table"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.0.6",
+        "@modelcontextprotocol/ext-apps": "^0.1.0",
+        "@tanstack/react-table": "^8.20.5",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "zod": "^3.24.1"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.2",
+        "@types/react": "^18.3.18",
+        "@types/react-dom": "^18.3.5",
+        "@vitejs/plugin-react": "^4.3.4",
+        "concurrently": "^9.1.2",
+        "tsx": "^4.19.2",
+        "typescript": "^5.7.2",
+        "vite": "^6.0.7",
+        "vite-plugin-singlefile": "^2.0.4"
+    }
+}

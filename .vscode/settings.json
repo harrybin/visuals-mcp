@@ -1,0 +1,13 @@
+{
+  "github.copilot.chat.mcpServers": {
+    "table-server": {
+      "command": "tsx",
+      "args": [
+        "server.ts"
+      ],
+      "env": {},
+      "description": "Interactive table visualization server with TanStack Table",
+      "disabled": false
+    }
+  }
+}

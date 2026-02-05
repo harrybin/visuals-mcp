@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "table-server": {
+            "command": "tsx",
+            "args": [
+                "D:\\harrybin\\visuals-mcp\\server.ts"
+            ]
+        }
+    }
+}
