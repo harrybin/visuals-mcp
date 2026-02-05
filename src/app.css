@@ -13,6 +13,36 @@ body {
   line-height: var(--font-text-md-line-height, 1.5);
 }
 
+body.theme-dark {
+  color-scheme: dark;
+  --color-background-primary: #0f1115;
+  --color-background-secondary: #171a21;
+  --color-background-hover: #1f2430;
+  --color-background-selected: #1c2b42;
+  --color-background-selected-hover: #223450;
+  --color-text-primary: #e6e9ee;
+  --color-text-secondary: #a7b0bc;
+  --color-text-link: #6aa8ff;
+  --color-border-primary: #2a2f3a;
+  --color-border-secondary: #202531;
+  --color-border-focus: #6aa8ff;
+}
+
+body.theme-light {
+  color-scheme: light;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f6f8;
+  --color-background-hover: #eceff3;
+  --color-background-selected: #e6f2ff;
+  --color-background-selected-hover: #cce5ff;
+  --color-text-primary: #0a0a0a;
+  --color-text-secondary: #5a5f69;
+  --color-text-link: #0b5bd3;
+  --color-border-primary: #d6dbe3;
+  --color-border-secondary: #e4e8ee;
+  --color-border-focus: #0b5bd3;
+}
+
 .loading {
   display: flex;
   align-items: center;

@@ -17,6 +17,49 @@ import {
 import type { TableToolInput, TableState, Column } from "../types";
 import "./app.css";
 
+type ThemeMode = "dark" | "light";
+
+const applyThemeMode = (mode: ThemeMode) => {
+  document.body.classList.toggle("theme-dark", mode === "dark");
+  document.body.classList.toggle("theme-light", mode === "light");
+  document.body.dataset.theme = mode;
+};
+
+const resolveThemeMode = (ctx?: any): ThemeMode => {
+  if (ctx?.isDarkTheme === true) return "dark";
+  if (ctx?.isDarkTheme === false) return "light";
+
+  const candidates = [
+    ctx?.theme?.kind,
+    ctx?.theme?.type,
+    ctx?.colorTheme?.kind,
+    ctx?.colorTheme?.type,
+    ctx?.colorScheme,
+    ctx?.theme,
+    ctx?.colorTheme,
+    ctx?.appearance,
+  ];
+
+  for (const value of candidates) {
+    if (typeof value !== "string") continue;
+    const normalized = value.toLowerCase();
+
+    if (normalized.includes("dark") || normalized.includes("black")) {
+      return "dark";
+    }
+
+    if (normalized.includes("light") || normalized.includes("white")) {
+      return "light";
+    }
+
+    if (normalized.includes("hc")) {
+      return normalized.includes("light") ? "light" : "dark";
+    }
+  }
+
+  return "dark";
+};
+
 function TableApp() {
   const [tableData, setTableData] = useState<TableToolInput | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -29,6 +72,8 @@ function TableApp() {
     appInfo: { name: "table-display", version: "1.0.0" },
     capabilities: {},
     onAppCreated: (createdApp) => {
+      applyThemeMode("dark");
+
       // Handle tool input - initial data load
       createdApp.ontoolinput = (params) => {
         console.log("Received tool input:", params);
@@ -69,6 +114,8 @@ function TableApp() {
       // Handle host context changes (theme, safe area, etc.)
       createdApp.onhostcontextchanged = (ctx) => {
         console.log("Host context changed:", ctx);
+
+        applyThemeMode(resolveThemeMode(ctx));
 
         // Handle safe area insets
         if (ctx.safeAreaInsets) {
