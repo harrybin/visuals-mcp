@@ -20,9 +20,12 @@ import "./app.css";
 type ThemeMode = "dark" | "light";
 
 const applyThemeMode = (mode: ThemeMode) => {
-  document.body.classList.toggle("theme-dark", mode === "dark");
-  document.body.classList.toggle("theme-light", mode === "light");
-  document.body.dataset.theme = mode;
+  const targets = [document.documentElement, document.body];
+  for (const target of targets) {
+    target.classList.toggle("theme-dark", mode === "dark");
+    target.classList.toggle("theme-light", mode === "light");
+    target.dataset.theme = mode;
+  }
 };
 
 const resolveThemeMode = (ctx?: any): ThemeMode => {
