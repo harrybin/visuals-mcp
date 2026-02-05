@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"visuals-mcp": {
+			"type": "stdio",
+			"command": "npm",
+			"args": [
+				"run",
+				"serve"
+			]
+		}
+	},
+	"inputs": []
+}
