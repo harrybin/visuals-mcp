@@ -34,13 +34,13 @@ function TableApp() {
         console.log("Received tool input:", params);
         const data = params.arguments as TableToolInput;
         setTableData(data);
-        
+
         // Reset state on new data
         setSorting([]);
         setColumnFilters([]);
         setRowSelection({});
         setFilterInputs({});
-        
+
         // Set initial column visibility
         const visibility: VisibilityState = {};
         data.columns.forEach((col) => {
@@ -52,10 +52,10 @@ function TableApp() {
       // Handle tool result - for query_table_data responses
       createdApp.ontoolresult = (result: any) => {
         console.log("Received tool result:", result);
-        
+
         if (result._meta?.ui?.data) {
           const uiData = result._meta.ui.data as any;
-          
+
           // Update with server-filtered/sorted data
           if (uiData.rows && tableData) {
             setTableData({
@@ -69,7 +69,7 @@ function TableApp() {
       // Handle host context changes (theme, safe area, etc.)
       createdApp.onhostcontextchanged = (ctx) => {
         console.log("Host context changed:", ctx);
-        
+
         // Handle safe area insets
         if (ctx.safeAreaInsets) {
           const { top, right, bottom, left } = ctx.safeAreaInsets;
@@ -89,9 +89,11 @@ function TableApp() {
   useEffect(() => {
     if (!app || !tableData) return;
 
-    const selectedIds = Object.keys(rowSelection).filter((id) => rowSelection[id]);
+    const selectedIds = Object.keys(rowSelection).filter(
+      (id) => rowSelection[id],
+    );
     const visibleCols = Object.keys(columnVisibility).filter(
-      (col) => columnVisibility[col]
+      (col) => columnVisibility[col],
     );
 
     const state: TableState = {
@@ -100,17 +102,19 @@ function TableApp() {
         direction: s.desc ? "desc" : "asc",
       })),
       filters: Object.fromEntries(
-        columnFilters.map((f) => [f.id, String(f.value)])
+        columnFilters.map((f) => [f.id, String(f.value)]),
       ),
       selectedRowIds: selectedIds,
       visibleColumns: visibleCols,
     };
 
     // Log state changes for debugging
-    app.sendLog({
-      level: "info",
-      data: `Table state: ${selectedIds.length} rows selected, ${columnFilters.length} filters active, ${sorting.length} columns sorted`,
-    }).catch(console.error);
+    app
+      .sendLog({
+        level: "info",
+        data: `Table state: ${selectedIds.length} rows selected, ${columnFilters.length} filters active, ${sorting.length} columns sorted`,
+      })
+      .catch(console.error);
   }, [sorting, columnFilters, rowSelection, columnVisibility, app, tableData]);
 
   // Create dynamic columns from table data
@@ -127,7 +131,8 @@ function TableApp() {
           const ref = React.useRef<HTMLInputElement>(null);
           React.useEffect(() => {
             if (ref.current) {
-              ref.current.indeterminate = table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected();
+              ref.current.indeterminate =
+                table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected();
             }
           }, [table.getIsSomeRowsSelected(), table.getIsAllRowsSelected()]);
           return (
@@ -162,13 +167,18 @@ function TableApp() {
         enableColumnFilter: col.filterable !== false,
         cell: ({ getValue }) => {
           const value = getValue();
-          
+
           // Format based on type
           if (col.type === "date" && value) {
-            const dateValue = typeof value === 'string' || typeof value === 'number' || value instanceof Date 
-              ? new Date(value) 
-              : null;
-            return dateValue && !isNaN(dateValue.getTime()) ? dateValue.toLocaleDateString() : String(value);
+            const dateValue =
+              typeof value === "string" ||
+              typeof value === "number" ||
+              value instanceof Date
+                ? new Date(value)
+                : null;
+            return dateValue && !isNaN(dateValue.getTime())
+              ? dateValue.toLocaleDateString()
+              : String(value);
           }
           if (col.type === "boolean") {
             return value ? "✓" : "✗";
@@ -176,7 +186,7 @@ function TableApp() {
           if (col.type === "number" && typeof value === "number") {
             return value.toLocaleString();
           }
-          
+
           return String(value ?? "");
         },
       });
@@ -276,14 +286,14 @@ function TableApp() {
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                           {{
                             asc: " ↑",
                             desc: " ↓",
                           }[header.column.getIsSorted() as string] ?? null}
                         </div>
-                        
+
                         {/* Filter input */}
                         {header.column.getCanFilter() &&
                           header.column.id !== "select" && (
@@ -321,7 +331,10 @@ function TableApp() {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className={row.getIsSelected() ? "selected" : ""}>
+              <tr
+                key={row.id}
+                className={row.getIsSelected() ? "selected" : ""}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -336,19 +349,21 @@ function TableApp() {
       {/* Pagination Controls */}
       <div className="pagination">
         <div className="pagination-info">
-          {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
+          {table.getState().pagination.pageIndex *
+            table.getState().pagination.pageSize +
+            1}
           {" - "}
           {Math.min(
             (table.getState().pagination.pageIndex + 1) *
               table.getState().pagination.pageSize,
-            table.getFilteredRowModel().rows.length
+            table.getFilteredRowModel().rows.length,
           )}
           {" of "}
           {table.getFilteredRowModel().rows.length} rows
           {Object.keys(rowSelection).length > 0 &&
             ` (${Object.keys(rowSelection).length} selected)`}
         </div>
-        
+
         <div className="pagination-controls">
           <button
             onClick={() => table.setPageIndex(0)}
@@ -378,7 +393,7 @@ function TableApp() {
           >
             ⟫
           </button>
-          
+
           <select
             value={table.getState().pagination.pageSize}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
