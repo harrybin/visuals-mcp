@@ -149,13 +149,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           type: "text",
           text: `Displaying table with ${input.rows.length} rows and ${input.columns.length} columns.${input.title ? ` Title: ${input.title}` : ""}`,
         },
-        {
-          type: "resource",
-          resource: {
-            uri: "table://display",
-            mimeType: "text/html",
-          },
-        },
       ],
       _meta: {
         ui: {

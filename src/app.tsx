@@ -50,11 +50,11 @@ function TableApp() {
       };
 
       // Handle tool result - for query_table_data responses
-      createdApp.ontoolresult = (result) => {
+      createdApp.ontoolresult = (result: any) => {
         console.log("Received tool result:", result);
         
         if (result._meta?.ui?.data) {
-          const uiData = result._meta.ui.data;
+          const uiData = result._meta.ui.data as any;
           
           // Update with server-filtered/sorted data
           if (uiData.rows && tableData) {
@@ -85,7 +85,7 @@ function TableApp() {
     },
   });
 
-  // Update model context when user interacts
+  // Log table state changes (updateModelContext is not available in current API)
   useEffect(() => {
     if (!app || !tableData) return;
 
@@ -106,12 +106,11 @@ function TableApp() {
       visibleColumns: visibleCols,
     };
 
-    // Notify agent of current table state
-    app.updateModelContext({
-      type: "table_state",
-      state,
-      summary: `${selectedIds.length} rows selected, ${columnFilters.length} filters active, ${sorting.length} columns sorted`,
-    });
+    // Log state changes for debugging
+    app.sendLog({
+      level: "info",
+      data: `Table state: ${selectedIds.length} rows selected, ${columnFilters.length} filters active, ${sorting.length} columns sorted`,
+    }).catch(console.error);
   }, [sorting, columnFilters, rowSelection, columnVisibility, app, tableData]);
 
   // Create dynamic columns from table data
@@ -124,14 +123,22 @@ function TableApp() {
     if (tableData.allowRowSelection !== false) {
       cols.push({
         id: "select",
-        header: ({ table }) => (
-          <input
-            type="checkbox"
-            checked={table.getIsAllRowsSelected()}
-            indeterminate={table.getIsSomeRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        ),
+        header: ({ table }) => {
+          const ref = React.useRef<HTMLInputElement>(null);
+          React.useEffect(() => {
+            if (ref.current) {
+              ref.current.indeterminate = table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected();
+            }
+          }, [table.getIsSomeRowsSelected(), table.getIsAllRowsSelected()]);
+          return (
+            <input
+              ref={ref}
+              type="checkbox"
+              checked={table.getIsAllRowsSelected()}
+              onChange={table.getToggleAllRowsSelectedHandler()}
+            />
+          );
+        },
         cell: ({ row }) => (
           <input
             type="checkbox"
@@ -158,7 +165,10 @@ function TableApp() {
           
           // Format based on type
           if (col.type === "date" && value) {
-            return new Date(value).toLocaleDateString();
+            const dateValue = typeof value === 'string' || typeof value === 'number' || value instanceof Date 
+              ? new Date(value) 
+              : null;
+            return dateValue && !isNaN(dateValue.getTime()) ? dateValue.toLocaleDateString() : String(value);
           }
           if (col.type === "boolean") {
             return value ? "✓" : "✗";
