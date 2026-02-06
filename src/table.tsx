@@ -30,8 +30,8 @@ const buildVisibilityState = (columns: Column[]): VisibilityState => {
 export function TableView({ tableData, onStateChange }: TableViewProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() =>
-    buildVisibilityState(tableData.columns),
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    () => buildVisibilityState(tableData.columns),
   );
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [filterInputs, setFilterInputs] = useState<Record<string, string>>({});
