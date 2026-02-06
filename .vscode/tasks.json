@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "publish",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"publish"
+			],
+			"group": "build"
+		}
+	]
+}

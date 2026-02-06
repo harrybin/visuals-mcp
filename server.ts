@@ -21,7 +21,7 @@ let currentTableData: any = null;
 
 const server = new Server(
   {
-    name: "mcp-table-server",
+    name: "visuals-mcp",
     version: "1.0.0",
   },
   {
@@ -172,7 +172,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (query.filters) {
       Object.entries(query.filters).forEach(([key, value]) => {
         filteredRows = filteredRows.filter((row) =>
-          String(row[key]).toLowerCase().includes(value.toLowerCase()),
+          String(row[key]).toLowerCase().includes(String(value).toLowerCase()),
         );
       });
     }
@@ -250,7 +250,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 
   if (uri === "table://display") {
     try {
-      const htmlPath = join(__dirname, "dist", "mcp-app.html");
+      const htmlPath = join(__dirname, "mcp-app.html");
       const htmlContent = readFileSync(htmlPath, "utf-8");
 
       return {

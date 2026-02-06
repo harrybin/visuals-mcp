@@ -17,6 +17,24 @@ An MCP (Model Context Protocol) server that provides interactive table visualiza
 
 ## Installation
 
+### GitHub Packages (Recommended)
+
+1. Authenticate npm with GitHub Packages:
+
+```bash
+npm config set @harrybin:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+2. Install and run:
+
+```bash
+npm install -g @harrybin/visuals-mcp
+visuals-mcp
+```
+
+### Local Development
+
 ```bash
 # Install dependencies
 npm install
@@ -31,7 +49,7 @@ npm run serve
 ## Project Structure
 
 ```
-mcp-table-server/
+visuals-mcp/
 ├── server.ts                # MCP server implementation
 ├── types.ts                 # TypeScript type definitions
 ├── src/

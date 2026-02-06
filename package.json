@@ -1,12 +1,17 @@
 {
-    "name": "mcp-table-server",
+    "name": "@harrybin/visuals-mcp",
     "version": "1.0.0",
     "description": "MCP server providing interactive table visualization using TanStack Table",
     "type": "module",
     "main": "dist/server.js",
+    "bin": {
+        "visuals-mcp": "dist/server.js"
+    },
     "scripts": {
-        "build": "vite build",
-        "serve": "tsx server.ts",
+        "build": "npm run build:ui && npm run build:server",
+        "build:ui": "vite build",
+        "build:server": "tsc -p tsconfig.server.json",
+        "serve": "node dist/server.js",
         "dev": "concurrently \"vite build --watch\" \"tsx watch server.ts\""
     },
     "keywords": [
@@ -16,25 +21,44 @@
         "table",
         "tanstack-table"
     ],
-    "author": "",
+    "author": "harrybin",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/harrybin/visuals-mcp.git"
+    },
+    "bugs": {
+        "url": "https://github.com/harrybin/visuals-mcp/issues"
+    },
+    "homepage": "https://github.com/harrybin/visuals-mcp#readme",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "MCP_SETUP.md",
+        "QUICKSTART.md",
+        "EXAMPLES.md"
+    ],
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.0.6",
-        "@modelcontextprotocol/ext-apps": "^0.1.0",
+        "@modelcontextprotocol/ext-apps": "^1.0.1",
         "@tanstack/react-table": "^8.20.5",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
-        "zod": "^3.24.1"
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4",
+        "zod": "^4.3.6"
     },
     "devDependencies": {
-        "@types/node": "^22.10.2",
-        "@types/react": "^18.3.18",
-        "@types/react-dom": "^18.3.5",
-        "@vitejs/plugin-react": "^4.3.4",
-        "concurrently": "^9.1.2",
-        "tsx": "^4.19.2",
+        "@types/node": "^25.2.0",
+        "@types/react": "^19.2.13",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^5.1.3",
+        "concurrently": "^9.2.1",
+        "tsx": "^4.21.0",
         "typescript": "^5.7.2",
-        "vite": "^6.0.7",
+        "vite": "^7.3.1",
         "vite-plugin-singlefile": "^2.0.4"
     }
 }
