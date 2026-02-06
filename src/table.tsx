@@ -13,6 +13,11 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import type { TableToolInput, TableState, Column } from "../types";
+import {
+  exportTableToPDF,
+  copyTableToCSV,
+  copyTableToTSV,
+} from "./table-export";
 
 type TableViewProps = {
   tableData: TableToolInput;
@@ -35,6 +40,12 @@ export function TableView({ tableData, onStateChange }: TableViewProps) {
   );
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [filterInputs, setFilterInputs] = useState<Record<string, string>>({});
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (message: string) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 2000);
+  };
 
   useEffect(() => {
     setSorting([]);
@@ -177,10 +188,11 @@ export function TableView({ tableData, onStateChange }: TableViewProps) {
 
   return (
     <div className="table-container">
+      {toast && <div className="toast">{toast}</div>}
       {tableData.title && <h1 className="table-title">{tableData.title}</h1>}
 
-      {tableData.allowColumnVisibility !== false && (
-        <div className="controls">
+      <div className="controls">
+        {tableData.allowColumnVisibility !== false && (
           <details className="column-visibility">
             <summary>Column Visibility</summary>
             <div className="column-list">
@@ -201,8 +213,38 @@ export function TableView({ tableData, onStateChange }: TableViewProps) {
               ))}
             </div>
           </details>
+        )}
+
+        <div className="export-buttons">
+          <button
+            className="export-btn"
+            onClick={async () => {
+              const ok = await copyTableToCSV(table);
+              showToast(ok ? "CSV copied to clipboard!" : "Copy failed");
+            }}
+            title="Copy as CSV to clipboard"
+          >
+            📋 Copy CSV
+          </button>
+          <button
+            className="export-btn"
+            onClick={async () => {
+              const ok = await copyTableToTSV(table);
+              showToast(ok ? "TSV copied to clipboard!" : "Copy failed");
+            }}
+            title="Copy as TSV to clipboard"
+          >
+            📋 Copy TSV
+          </button>
+          <button
+            className="export-btn"
+            onClick={() => exportTableToPDF(table, tableData)}
+            title="Export as PDF"
+          >
+            📄 Export PDF
+          </button>
         </div>
-      )}
+      </div>
 
       <div className="table-wrapper">
         <table>

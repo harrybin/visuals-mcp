@@ -1,6 +1,6 @@
 {
     "name": "@harrybin/visuals-mcp",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "MCP server providing interactive table visualization using TanStack Table",
     "type": "module",
     "main": "dist/server.js",
@@ -46,6 +46,8 @@
         "@modelcontextprotocol/sdk": "^1.0.6",
         "@modelcontextprotocol/ext-apps": "^1.0.1",
         "@tanstack/react-table": "^8.20.5",
+        "jspdf": "^2.5.2",
+        "jspdf-autotable": "^3.8.3",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "zod": "^4.3.6"
