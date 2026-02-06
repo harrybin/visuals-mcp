@@ -9,11 +9,11 @@ export default defineConfig({
   ],
   build: {
     outDir: "dist",
-    emptyOutDir: true,
+    emptyOutDir: false,
     minify: true,
     target: "es2022",
     rollupOptions: {
-      input: "./mcp-app.html",
+      input: "./mcp-image.html",
     },
   },
 });

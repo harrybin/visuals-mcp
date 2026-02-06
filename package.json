@@ -1,7 +1,7 @@
 {
     "name": "@harrybin/visuals-mcp",
-    "version": "1.1.0",
-    "description": "MCP server providing interactive table visualization using TanStack Table",
+    "version": "1.2.0",
+    "description": "MCP server providing interactive visualizations: tables with TanStack Table and image previews",
     "type": "module",
     "main": "dist/server.js",
     "bin": {
@@ -9,7 +9,9 @@
     },
     "scripts": {
         "build": "npm run build:ui && npm run build:server",
-        "build:ui": "vite build",
+        "build:ui": "npm run build:table && npm run build:image",
+        "build:table": "vite build --config vite.config.table.ts",
+        "build:image": "vite build --config vite.config.image.ts",
         "build:server": "tsc -p tsconfig.server.json",
         "serve": "node dist/server.js",
         "dev": "concurrently \"vite build --watch\" \"tsx watch server.ts\""
@@ -37,6 +39,7 @@
     },
     "files": [
         "dist",
+        "doc",
         "README.md",
         "MCP_SETUP.md",
         "QUICKSTART.md",

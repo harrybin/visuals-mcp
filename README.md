@@ -1,8 +1,10 @@
-# MCP Table Server
+# MCP Visuals Server
 
-An MCP (Model Context Protocol) server that provides interactive table visualization using **TanStack Table** and **React**. This server enables AI agents to display data in a rich, interactive table format with sorting, filtering, pagination, column visibility controls, and row selection.
+An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table and **image previews** with metadata.
 
 ## Features
+
+### Table Visualization
 
 - **Interactive Table Display**: Full-featured data table with TanStack Table v8
 - **Sorting**: Click column headers to sort ascending/descending
@@ -14,6 +16,19 @@ An MCP (Model Context Protocol) server that provides interactive table visualiza
 - **Theme Integration**: Respects VS Code theme colors and fonts
 - **Responsive**: Works on different screen sizes
 - **Generic Data Support**: Accepts any column structure and data types
+
+### Image Preview
+
+- **Rich Image Cards**: Display images with title, caption, and metadata
+- **Metadata Display**: Show filename, dimensions, and file size
+- **Flexible Sources**: Support URLs and data URIs
+- **Theme Integration**: Respects VS Code theme colors and fonts
+
+## Screenshot
+
+![Table Example](doc/table-example.png)
+
+*Interactive table with sorting, filtering, pagination, and row selection*
 
 ## Installation
 
@@ -53,9 +68,12 @@ visuals-mcp/
 ├── server.ts                # MCP server implementation
 ├── types.ts                 # TypeScript type definitions
 ├── src/
-│   ├── app.tsx             # React app with TanStack Table
-│   └── app.css             # Styling
-├── mcp-app.html            # HTML entry point
+│   ├── table-app.tsx       # React app with TanStack Table
+│   ├── table-app.css       # Styling
+│   ├── image-app.tsx       # React app for image previews
+│   └── image.css           # Image preview styling
+├── mcp-table.html          # HTML entry point
+├── mcp-image.html          # HTML entry point for image preview
 ├── vite.config.ts          # Vite build configuration
 ├── tsconfig.json           # TypeScript configuration
 └── package.json
@@ -161,6 +179,25 @@ UI-only tool for server-side data operations (hidden from the model). The UI can
   },
   "page": 0,
   "pageSize": 20
+}
+```
+
+### Tool: `display_image`
+
+Displays an image preview card with optional metadata.
+
+**Input:**
+
+```json
+{
+  "src": "https://example.com/preview.png",
+  "title": "Preview",
+  "alt": "Screenshot preview",
+  "caption": "Latest build output",
+  "filename": "preview.png",
+  "sizeBytes": 154233,
+  "width": 1200,
+  "height": 800
 }
 ```
 
@@ -290,7 +327,7 @@ The table automatically formats values based on column type:
 3. Server stores data in memory (for `query_table_data`)
 4. Server returns resource reference (`table://display`)
 5. VS Code requests HTML resource
-6. Server reads bundled `dist/mcp-app.html` and returns it
+6. Server reads bundled `dist/mcp-table.html` and returns it
 
 ### UI Flow
 
@@ -315,7 +352,7 @@ Applied automatically via `useHostStyles(app)` hook.
 
 ### Custom Column Rendering
 
-Modify [src/app.tsx](src/app.tsx) to add custom cell renderers:
+Modify [src/table-app.tsx](src/table-app.tsx) to add custom cell renderers:
 
 ```typescript
 cell: ({ getValue, row }) => {

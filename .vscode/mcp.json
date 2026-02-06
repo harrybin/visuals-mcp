@@ -2,10 +2,9 @@
 	"servers": {
 		"visuals-mcp": {
 			"type": "stdio",
-			"command": "npm",
+			"command": "node",
 			"args": [
-				"run",
-				"serve"
+				"dist/server.js"
 			]
 		}
 	},

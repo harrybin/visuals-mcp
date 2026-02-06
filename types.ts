@@ -60,3 +60,19 @@ export const QueryTableDataInputSchema = z.object({
 });
 
 export type QueryTableDataInput = z.infer<typeof QueryTableDataInputSchema>;
+
+/**
+ * Input schema for the display_image tool
+ */
+export const ImageToolInputSchema = z.object({
+  src: z.string().describe("Image URL or data URI"),
+  title: z.string().optional().describe("Optional title for the image"),
+  alt: z.string().optional().describe("Alt text for accessibility"),
+  caption: z.string().optional().describe("Optional caption below the image"),
+  width: z.number().optional().describe("Optional image width in pixels"),
+  height: z.number().optional().describe("Optional image height in pixels"),
+  filename: z.string().optional().describe("Optional filename to display"),
+  sizeBytes: z.number().optional().describe("Optional file size in bytes"),
+});
+
+export type ImageToolInput = z.infer<typeof ImageToolInputSchema>;

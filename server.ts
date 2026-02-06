@@ -8,13 +8,83 @@ import {
   ListResourcesRequestSchema,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { TableToolInputSchema, QueryTableDataInputSchema } from "./types.js";
+import {
+  TableToolInputSchema,
+  QueryTableDataInputSchema,
+  ImageToolInputSchema,
+} from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Helper to convert file paths to data URIs
+function fileToDataUri(src: string): string {
+  // If already a data URI or HTTP URL, return as-is
+  if (
+    src.startsWith("data:") ||
+    src.startsWith("http://") ||
+    src.startsWith("https://")
+  ) {
+    return src;
+  }
+
+  // Convert file:// URL to local path
+  let filePath = src;
+  if (src.startsWith("file://")) {
+    // Remove file:// prefix and decode URL encoding
+    filePath = decodeURIComponent(src.slice(7));
+
+    // On Windows, handle drive letters correctly
+    // file:///C:/path -> C:/path (already ok)
+    // file://d:/path -> d:/path (remove leading slash)
+    if (
+      process.platform === "win32" &&
+      filePath.startsWith("/") &&
+      filePath[2] === ":"
+    ) {
+      filePath = filePath.slice(1);
+    }
+  }
+
+  // Normalize the path
+  filePath = filePath.replace(/\\/g, "/");
+
+  console.log(`Converting to data URI: ${filePath}`);
+
+  // Check if file exists
+  if (!existsSync(filePath)) {
+    console.warn(`File not found: ${filePath}, returning original src`);
+    return src;
+  }
+
+  // Determine MIME type from extension
+  const ext = filePath.toLowerCase().split(".").pop() || "";
+  const mimeTypes: Record<string, string> = {
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    gif: "image/gif",
+    svg: "image/svg+xml",
+    webp: "image/webp",
+    bmp: "image/bmp",
+  };
+
+  const mimeType = mimeTypes[ext] || "image/png";
+
+  // Read file and convert to base64
+  try {
+    const buffer = readFileSync(filePath);
+    const base64 = buffer.toString("base64");
+    console.log(`Successfully converted ${filePath} to data URI`);
+    return `data:${mimeType};base64,${base64}`;
+  } catch (error) {
+    console.error(`Failed to read file ${filePath}:`, error);
+    return src;
+  }
+}
 
 // Store table data for server-side operations (in memory for demo)
 let currentTableData: any = null;
@@ -126,6 +196,63 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: "display_image",
+        description:
+          "Display/show any image to the user with an interactive preview card. Use this tool to show screenshots, diagrams, charts, photographs, or any visual content. Provides optional metadata including title, caption, dimensions, and file information. Always use this tool whenever you need to present visual content. This also applies to listings and any other imageoperations like get, download etc..these formats are explicitly handled: PNG, JPG, JPEG, GIF, SVG, WebP, BMP. The UI itself can display any image if the src is a valid URL or data URI, but local file paths are only auto-converted for those extensions",
+        inputSchema: {
+          type: "object",
+          properties: {
+            src: {
+              type: "string",
+              description:
+                "Image URL or data URI. Required. This is the source of the image to display.",
+            },
+            title: {
+              type: "string",
+              description:
+                "Optional title displayed above the image. Use to provide context or describe what the image shows.",
+            },
+            alt: {
+              type: "string",
+              description:
+                "Alt text for accessibility. Describe the image content for screen readers and when image fails to load.",
+            },
+            caption: {
+              type: "string",
+              description:
+                "Optional caption displayed below the image. Use to explain key details, findings, or analysis related to the image.",
+            },
+            width: {
+              type: "number",
+              description:
+                "Optional width in pixels to constrain the image. Use to control display size.",
+            },
+            height: {
+              type: "number",
+              description:
+                "Optional height in pixels to constrain the image. Use to control display size.",
+            },
+            filename: {
+              type: "string",
+              description:
+                "Optional original filename to display. Useful for showing file information alongside the preview.",
+            },
+            sizeBytes: {
+              type: "number",
+              description:
+                "Optional file size in bytes. Displayed as formatted file size (KB, MB). Useful for showing storage information.",
+            },
+          },
+          required: ["src"],
+        },
+        _meta: {
+          ui: {
+            resourceUri: "image://preview",
+            visibility: ["model", "app"],
+          },
+        },
+      },
     ],
   };
 });
@@ -222,6 +349,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  if (name === "display_image") {
+    const input = ImageToolInputSchema.parse(args);
+
+    // Convert file paths to data URIs for browser compatibility
+    const processedInput = {
+      ...input,
+      src: fileToDataUri(input.src),
+    };
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Displaying image preview.${input.title ? ` Title: ${input.title}` : ""}`,
+        },
+      ],
+      _meta: {
+        ui: {
+          data: processedInput,
+        },
+      },
+    };
+  }
+
   throw new Error(`Unknown tool: ${name}`);
 });
 
@@ -238,6 +389,12 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
           "HTML resource for rendering interactive tables with TanStack Table",
         mimeType: "text/html",
       },
+      {
+        uri: "image://preview",
+        name: "Image Preview Card",
+        description: "HTML resource for rendering image preview cards",
+        mimeType: "text/html",
+      },
     ],
   };
 });
@@ -250,7 +407,28 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 
   if (uri === "table://display") {
     try {
-      const htmlPath = join(__dirname, "mcp-app.html");
+      const htmlPath = join(__dirname, "mcp-table.html");
+      const htmlContent = readFileSync(htmlPath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "text/html",
+            text: htmlContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to read HTML resource. Make sure to run 'npm run build' first. Error: ${error}`,
+      );
+    }
+  }
+
+  if (uri === "image://preview") {
+    try {
+      const htmlPath = join(__dirname, "mcp-image.html");
       const htmlContent = readFileSync(htmlPath, "utf-8");
 
       return {

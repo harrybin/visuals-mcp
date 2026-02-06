@@ -4,6 +4,7 @@ import { useApp } from "@modelcontextprotocol/ext-apps/react";
 import type { TableToolInput } from "../types";
 import { TableView } from "./table";
 import "./app.css";
+import "./table-app.css";
 
 type ThemeMode = "dark" | "light";
 
