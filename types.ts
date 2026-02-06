@@ -19,7 +19,9 @@ export type Column = z.infer<typeof ColumnSchema>;
  */
 export const TableToolInputSchema = z.object({
   columns: z.array(ColumnSchema).describe("Array of column definitions"),
-  rows: z.array(z.record(z.string(), z.any())).describe("Array of row data objects"),
+  rows: z
+    .array(z.record(z.string(), z.any()))
+    .describe("Array of row data objects"),
   title: z.string().optional().describe("Optional title for the table"),
   allowRowSelection: z.boolean().optional().default(true),
   allowColumnVisibility: z.boolean().optional().default(true),
