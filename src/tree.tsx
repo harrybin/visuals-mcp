@@ -224,10 +224,12 @@ export function TreeView({ treeData, onStateChange }: TreeViewProps) {
             onClick={async () => {
               const ok = await exportTreeToImage();
               showToast(
-                ok ? "Image downloaded!" : "Screenshot not supported in this browser",
+                ok
+                  ? "Image downloaded!"
+                  : "Image export requires html2canvas library",
               );
             }}
-            title="Export tree as image (PNG)"
+            title="Export tree as image (requires html2canvas library)"
           >
             🖼️ Export Image
           </button>

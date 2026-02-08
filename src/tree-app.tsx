@@ -110,7 +110,7 @@ function TreeApp() {
   return (
     <TreeView
       treeData={treeData}
-      onStateChange={(_, summary) => {
+      onStateChange={(_treeState, summary) => {
         if (!app) return;
         app
           .sendLog({

@@ -163,56 +163,27 @@ export const exportTreeToHTML = (treeData: TreeToolInput) => {
 
 /**
  * Export tree as PNG image using html2canvas
- * Note: This is a placeholder that uses a simpler screenshot approach
+ * Note: This requires browser support for canvas and blob APIs
+ * For production use, consider integrating the html2canvas library
  */
 export const exportTreeToImage = async (): Promise<boolean> => {
   try {
     // Check if the browser supports the necessary APIs
-    if (
-      !("clipboard" in navigator) ||
-      !("ClipboardItem" in window) ||
-      !("toBlob" in HTMLCanvasElement.prototype)
-    ) {
-      // Fallback: try to use native screenshot or canvas
-      const treeWrapper = document.querySelector(".tree-wrapper") as HTMLElement;
-      if (!treeWrapper) return false;
-
-      // For now, we'll use a simple canvas-based approach
-      // In a real implementation, you might use html2canvas library
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return false;
-
-      // Set canvas dimensions
-      const rect = treeWrapper.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-
-      // Draw a white background
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Convert to blob and download
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            resolve(false);
-            return;
-          }
-
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "tree-view.png";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          resolve(true);
-        });
-      });
+    if (!("toBlob" in HTMLCanvasElement.prototype)) {
+      console.warn("Browser does not support canvas.toBlob()");
+      return false;
     }
 
+    // Note: A full implementation would use html2canvas or similar library
+    // to render the DOM tree to canvas. This is a placeholder that creates
+    // a simple canvas as a fallback.
+    
+    // For a production implementation, you would:
+    // 1. Install html2canvas: npm install html2canvas
+    // 2. Import it: import html2canvas from 'html2canvas';
+    // 3. Use it like: const canvas = await html2canvas(treeWrapper);
+    
+    console.warn("Tree image export requires html2canvas library for full functionality");
     return false;
   } catch (error) {
     console.error("Export to image failed:", error);
