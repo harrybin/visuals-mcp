@@ -76,3 +76,40 @@ export const ImageToolInputSchema = z.object({
 });
 
 export type ImageToolInput = z.infer<typeof ImageToolInputSchema>;
+
+/**
+ * List item schema for individual list items
+ */
+export const ListItemSchema = z.object({
+  id: z.string().describe("Unique identifier for the list item"),
+  content: z.string().describe("Text content of the list item"),
+  checked: z.boolean().optional().default(false).describe("Whether the item is checked"),
+  image: z.string().optional().describe("Optional image URL or data URI for the item"),
+  metadata: z.record(z.string(), z.any()).optional().describe("Optional metadata for the item"),
+  subtext: z.string().optional().describe("Optional secondary text/description"),
+});
+
+export type ListItem = z.infer<typeof ListItemSchema>;
+
+/**
+ * Input schema for the display_list tool
+ */
+export const ListToolInputSchema = z.object({
+  items: z.array(ListItemSchema).describe("Array of list items to display"),
+  title: z.string().optional().describe("Optional title for the list"),
+  allowReorder: z.boolean().optional().default(true).describe("Allow drag-and-drop reordering"),
+  allowCheckboxes: z.boolean().optional().default(true).describe("Show checkboxes for items"),
+  compact: z.boolean().optional().default(false).describe("Use compact layout mode"),
+  showImages: z.boolean().optional().default(true).describe("Display item images if available"),
+});
+
+export type ListToolInput = z.infer<typeof ListToolInputSchema>;
+
+/**
+ * List state that gets sent back to the agent via updateModelContext
+ */
+export interface ListState {
+  itemOrder?: string[];
+  checkedItemIds?: string[];
+  selectedItemId?: string | null;
+}

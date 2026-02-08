@@ -1,0 +1,281 @@
+/* List-specific styles - base styles in app.css */
+
+.list-shell {
+  padding: 12px;
+  box-sizing: border-box;
+  display: grid;
+  gap: 12px;
+  max-width: 800px;
+}
+
+.list-header h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.list-subtitle {
+  margin: 2px 0 0 0;
+  color: var(--color-text-secondary, #b6b6c2);
+  font-size: 11px;
+}
+
+/* Controls section */
+.list-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.list-controls .export-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.list-controls button {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border-primary, #ddd);
+  border-radius: var(--border-radius-md, 4px);
+  background: var(--color-background-secondary, #f5f5f5);
+  color: var(--color-text-primary, #000000);
+  cursor: pointer;
+  font-size: var(--font-text-sm-size, 13px);
+  font-family: var(--font-sans, inherit);
+  font-weight: var(--font-weight-medium, 500);
+  transition: background 0.2s;
+}
+
+.list-controls button:hover {
+  background: var(--color-background-hover, #e8e8e8);
+}
+
+.list-controls button:active {
+  transform: translateY(1px);
+}
+
+/* List container */
+.list-container {
+  background: var(--color-background-secondary, #181b22);
+  border: 1px solid var(--color-border-primary, #2a2e38);
+  border-radius: 12px;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.list-container.compact {
+  gap: 2px;
+}
+
+/* List items */
+.list-item {
+  background: var(--color-background-primary, #ffffff);
+  border: 1px solid var(--color-border-secondary, #eee);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  cursor: grab;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+
+.list-item.compact {
+  padding: 6px 10px;
+  gap: 8px;
+}
+
+.list-item:hover {
+  background: var(--color-background-hover, #f9f9f9);
+}
+
+.list-item.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.list-item.drag-over {
+  transform: translateY(2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.list-item.selected {
+  background: var(--color-background-selected, #e6f2ff);
+  border-color: var(--color-border-focus, #0066cc);
+}
+
+/* Drag handle */
+.drag-handle {
+  cursor: grab;
+  color: var(--color-text-secondary, #b6b6c2);
+  font-size: 16px;
+  padding: 0 4px;
+  user-select: none;
+}
+
+.list-item.dragging .drag-handle {
+  cursor: grabbing;
+}
+
+/* Checkbox */
+.item-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin: 0;
+}
+
+/* Item content */
+.item-content {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  min-width: 0; /* Allow text truncation */
+}
+
+.item-thumbnail {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-secondary, #eee);
+}
+
+.item-thumbnail.compact {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.item-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.item-main-text {
+  font-size: var(--font-text-sm-size, 13px);
+  color: var(--color-text-primary, #000000);
+  word-break: break-word;
+}
+
+.item-subtext {
+  font-size: 11px;
+  color: var(--color-text-secondary, #b6b6c2);
+  word-break: break-word;
+}
+
+/* Item actions */
+.item-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.copy-btn {
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-primary, #ddd);
+  border-radius: 4px;
+  background: var(--color-background-secondary, #f5f5f5);
+  color: var(--color-text-secondary, #666);
+  cursor: pointer;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.list-item:hover .copy-btn {
+  opacity: 1;
+}
+
+.copy-btn:hover {
+  background: var(--color-background-hover, #e8e8e8);
+  color: var(--color-text-primary, #000);
+}
+
+/* Empty state */
+.list-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--color-text-secondary, #b6b6c2);
+  font-size: var(--font-text-sm-size, 13px);
+}
+
+/* Loading state */
+.list-loading {
+  padding: 12px;
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  color: var(--color-text-secondary, #b6b6c2);
+}
+
+/* Toast notification */
+.list-toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 10px 16px;
+  background: var(--color-background-selected, #e6f2ff);
+  color: var(--color-text-primary, #000000);
+  border: 1px solid var(--color-border-focus, #0066cc);
+  border-radius: var(--border-radius-md, 4px);
+  font-size: var(--font-text-sm-size, 13px);
+  font-weight: var(--font-weight-medium, 500);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: toast-in 0.2s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Info section */
+.list-info {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--color-text-secondary, #b6b6c2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .list-shell {
+    padding: 8px;
+  }
+
+  .item-thumbnail {
+    width: 28px;
+    height: 28px;
+  }
+
+  .item-thumbnail.compact {
+    width: 20px;
+    height: 20px;
+  }
+
+  .item-main-text {
+    font-size: 12px;
+  }
+
+  .item-subtext {
+    font-size: 10px;
+  }
+}
