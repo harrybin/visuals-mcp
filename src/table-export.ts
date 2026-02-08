@@ -115,7 +115,7 @@ const generateMarkdownContent = (table: Table<any>) => {
   const headers = getHeaders(table);
 
   // Escape pipe characters in cell content
-  const escapePipe = (str: string) => str.replace(/\|/g, "\\|");
+  const escapePipe = (str: string) => str.replace(/\\/g, "\\\\").replace(/\|/g, "\\|");
 
   // Create header row
   const headerRow = `| ${headers.map(escapePipe).join(" | ")} |`;
