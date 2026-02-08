@@ -15,6 +15,7 @@ import {
   TableToolInputSchema,
   QueryTableDataInputSchema,
   ImageToolInputSchema,
+  TreeToolInputSchema,
 } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -253,6 +254,75 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: "display_tree",
+        description:
+          "Display an interactive tree view for hierarchical data structures. " +
+          "Use this tool to visualize file systems, organizational charts, nested categories, JSON/XML structures, or any hierarchical relationships. " +
+          "Supports node expansion/collapse, metadata display, and export functionality.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            nodes: {
+              type: "array",
+              description: "Array of root tree nodes",
+              items: {
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
+                    description: "Unique identifier for the node",
+                  },
+                  label: {
+                    type: "string",
+                    description: "Display label for the node",
+                  },
+                  children: {
+                    type: "array",
+                    description: "Optional child nodes",
+                    items: { type: "object" },
+                  },
+                  metadata: {
+                    type: "object",
+                    description: "Optional metadata for the node",
+                  },
+                  icon: {
+                    type: "string",
+                    description: "Optional icon/emoji for the node",
+                  },
+                  expanded: {
+                    type: "boolean",
+                    default: false,
+                    description: "Whether the node should be initially expanded",
+                  },
+                },
+                required: ["id", "label"],
+              },
+            },
+            title: {
+              type: "string",
+              description: "Optional title for the tree view",
+            },
+            expandAll: {
+              type: "boolean",
+              default: false,
+              description: "Expand all nodes initially",
+            },
+            showMetadata: {
+              type: "boolean",
+              default: true,
+              description: "Show metadata in tree nodes",
+            },
+          },
+          required: ["nodes"],
+        },
+        _meta: {
+          ui: {
+            resourceUri: "tree://display",
+            visibility: ["model", "app"],
+          },
+        },
+      },
     ],
   };
 });
@@ -373,6 +443,35 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  if (name === "display_tree") {
+    const input = TreeToolInputSchema.parse(args);
+
+    // Count total nodes recursively
+    const countNodes = (nodes: any[]): number => {
+      return nodes.reduce(
+        (count, node) =>
+          count + 1 + (node.children ? countNodes(node.children) : 0),
+        0,
+      );
+    };
+
+    const totalNodes = countNodes(input.nodes);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Displaying tree view with ${totalNodes} total nodes.${input.title ? ` Title: ${input.title}` : ""}`,
+        },
+      ],
+      _meta: {
+        ui: {
+          data: input,
+        },
+      },
+    };
+  }
+
   throw new Error(`Unknown tool: ${name}`);
 });
 
@@ -393,6 +492,13 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         uri: "image://preview",
         name: "Image Preview Card",
         description: "HTML resource for rendering image preview cards",
+        mimeType: "text/html",
+      },
+      {
+        uri: "tree://display",
+        name: "Interactive Tree View",
+        description:
+          "HTML resource for rendering hierarchical tree structures with expand/collapse and export",
         mimeType: "text/html",
       },
     ],
@@ -429,6 +535,27 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   if (uri === "image://preview") {
     try {
       const htmlPath = join(__dirname, "mcp-image.html");
+      const htmlContent = readFileSync(htmlPath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "text/html",
+            text: htmlContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to read HTML resource. Make sure to run 'npm run build' first. Error: ${error}`,
+      );
+    }
+  }
+
+  if (uri === "tree://display") {
+    try {
+      const htmlPath = join(__dirname, "mcp-tree.html");
       const htmlContent = readFileSync(htmlPath, "utf-8");
 
       return {

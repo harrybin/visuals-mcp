@@ -76,3 +76,64 @@ export const ImageToolInputSchema = z.object({
 });
 
 export type ImageToolInput = z.infer<typeof ImageToolInputSchema>;
+
+/**
+ * Tree node schema for hierarchical data
+ */
+export const TreeNodeSchema: z.ZodType<any> = z.lazy(() =>
+  z.object({
+    id: z.string().describe("Unique identifier for the node"),
+    label: z.string().describe("Display label for the node"),
+    children: z
+      .array(TreeNodeSchema)
+      .optional()
+      .describe("Optional child nodes for hierarchical structure"),
+    metadata: z
+      .record(z.string(), z.any())
+      .optional()
+      .describe("Optional metadata associated with the node"),
+    icon: z.string().optional().describe("Optional icon/emoji for the node"),
+    expanded: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("Whether the node should be initially expanded"),
+  }),
+);
+
+export type TreeNode = {
+  id: string;
+  label: string;
+  children?: TreeNode[];
+  metadata?: Record<string, any>;
+  icon?: string;
+  expanded?: boolean;
+};
+
+/**
+ * Input schema for the display_tree tool
+ */
+export const TreeToolInputSchema = z.object({
+  nodes: z.array(TreeNodeSchema).describe("Array of root tree nodes"),
+  title: z.string().optional().describe("Optional title for the tree view"),
+  expandAll: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe("Expand all nodes initially"),
+  showMetadata: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe("Show metadata in tree nodes"),
+});
+
+export type TreeToolInput = z.infer<typeof TreeToolInputSchema>;
+
+/**
+ * Tree state that gets sent back to the agent via updateModelContext
+ */
+export interface TreeState {
+  expandedNodeIds?: string[];
+  selectedNodeId?: string;
+}
