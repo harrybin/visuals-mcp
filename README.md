@@ -1,6 +1,6 @@
 # MCP Visuals Server
 
-An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table and **image previews** with metadata.
+An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, and **tree views** for hierarchical data.
 
 ## Features
 
@@ -12,6 +12,7 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Pagination**: Customizable page sizes (5, 10, 20, 50, 100 rows)
 - **Column Visibility**: Toggle which columns are displayed
 - **Row Selection**: Select individual rows or all rows
+- **Export**: Copy as CSV/TSV or export as PDF
 - **Agent Integration**: Table state (selections, filters, sorting) automatically sent back to the LLM via `updateModelContext`
 - **Theme Integration**: Respects VS Code theme colors and fonts
 - **Responsive**: Works on different screen sizes
@@ -23,6 +24,19 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Metadata Display**: Show filename, dimensions, and file size
 - **Flexible Sources**: Support URLs and data URIs
 - **Theme Integration**: Respects VS Code theme colors and fonts
+
+### Tree View
+
+- **Hierarchical Data Display**: Interactive tree structure for nested data
+- **Expand/Collapse**: Click to expand or collapse nodes
+- **Node Selection**: Select individual nodes to highlight them
+- **Metadata Support**: Display optional metadata for each node
+- **Icons**: Add custom icons/emojis to nodes
+- **Bulk Operations**: Expand all or collapse all nodes at once
+- **Export Options**: Copy tree to clipboard, export as HTML, or save as image (PNG)
+- **Agent Integration**: Tree state (expanded nodes, selection) sent back to the LLM
+- **Theme Integration**: Respects VS Code theme colors and fonts
+- **Use Cases**: File systems, org charts, nested categories, JSON/XML structures
 
 ## Screenshot
 
@@ -70,11 +84,20 @@ visuals-mcp/
 ├── src/
 │   ├── table-app.tsx       # React app with TanStack Table
 │   ├── table-app.css       # Styling
+│   ├── table.tsx           # Table component
+│   ├── table-export.ts     # Table export utilities
 │   ├── image-app.tsx       # React app for image previews
-│   └── image.css           # Image preview styling
-├── mcp-table.html          # HTML entry point
+│   ├── image.css           # Image preview styling
+│   ├── tree-app.tsx        # React app for tree views
+│   ├── tree.tsx            # Tree component
+│   ├── tree-export.ts      # Tree export utilities
+│   └── tree.css            # Tree view styling
+├── mcp-table.html          # HTML entry point for table
 ├── mcp-image.html          # HTML entry point for image preview
-├── vite.config.ts          # Vite build configuration
+├── mcp-tree.html           # HTML entry point for tree view
+├── vite.config.table.ts    # Vite build configuration for table
+├── vite.config.image.ts    # Vite build configuration for image
+├── vite.config.tree.ts     # Vite build configuration for tree
 ├── tsconfig.json           # TypeScript configuration
 └── package.json
 ```
@@ -200,6 +223,90 @@ Displays an image preview card with optional metadata.
   "height": 800
 }
 ```
+
+### Tool: `display_tree`
+
+Displays an interactive tree view for hierarchical data structures. Perfect for visualizing file systems, organizational charts, nested categories, JSON/XML structures, or any hierarchical relationships.
+
+**Input:**
+
+```json
+{
+  "nodes": [
+    {
+      "id": "root",
+      "label": "My Project",
+      "icon": "📁",
+      "expanded": true,
+      "children": [
+        {
+          "id": "src",
+          "label": "src",
+          "icon": "📂",
+          "expanded": true,
+          "metadata": {
+            "type": "directory",
+            "items": 5
+          },
+          "children": [
+            {
+              "id": "app.ts",
+              "label": "app.ts",
+              "icon": "📄",
+              "metadata": {
+                "type": "file",
+                "size": "2.5 KB"
+              }
+            },
+            {
+              "id": "utils.ts",
+              "label": "utils.ts",
+              "icon": "📄",
+              "metadata": {
+                "type": "file",
+                "size": "1.8 KB"
+              }
+            }
+          ]
+        },
+        {
+          "id": "package.json",
+          "label": "package.json",
+          "icon": "📦",
+          "metadata": {
+            "type": "config",
+            "size": "1.2 KB"
+          }
+        }
+      ]
+    }
+  ],
+  "title": "Project Structure",
+  "expandAll": false,
+  "showMetadata": true
+}
+```
+
+**Node Properties:**
+
+- `id` (required): Unique identifier for the node
+- `label` (required): Display label for the node
+- `children` (optional): Array of child nodes for hierarchical structure
+- `metadata` (optional): Key-value pairs to display alongside the node
+- `icon` (optional): Emoji or icon character for the node
+- `expanded` (optional): Whether the node should be initially expanded (default: `false`)
+
+**Optional Parameters:**
+
+- `title`: Display title above the tree view
+- `expandAll`: Expand all nodes initially (default: `false`)
+- `showMetadata`: Show metadata in tree nodes (default: `true`)
+
+**Export Features:**
+
+- **Copy to Clipboard**: Copies tree as formatted text with tree structure characters (├──, └──, etc.)
+- **Export as HTML**: Downloads standalone HTML file with styled tree visualization
+- **Export as Image**: Downloads tree view as PNG image (browser-dependent)
 
 ## Example: Using in VS Code with MCP
 
