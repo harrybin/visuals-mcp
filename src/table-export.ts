@@ -108,3 +108,83 @@ export const exportTableToPDF = (
 
   doc.save(`${tableData.title || "table"}.pdf`);
 };
+
+const generateMarkdownContent = (table: Table<any>) => {
+  const rows = getRows(table);
+  const visibleColumns = getVisibleColumns(table);
+  const headers = getHeaders(table);
+
+  // Escape pipe characters in cell content
+  const escapePipe = (str: string) => str.replace(/\|/g, "\\|");
+
+  // Create header row
+  const headerRow = `| ${headers.map(escapePipe).join(" | ")} |`;
+
+  // Create separator row (align left by default)
+  const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`;
+
+  // Create data rows
+  const dataRows = rows.map((row) =>
+    `| ${visibleColumns
+      .map((col) => {
+        const value = row.getValue(col.id);
+        return escapePipe(String(value ?? ""));
+      })
+      .join(" | ")} |`
+  );
+
+  return [headerRow, separatorRow, ...dataRows].join("\n");
+};
+
+const generateHTMLContent = (table: Table<any>) => {
+  const rows = getRows(table);
+  const visibleColumns = getVisibleColumns(table);
+  const headers = getHeaders(table);
+
+  // Escape HTML characters
+  const escapeHTML = (str: string) =>
+    str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  // Create table HTML
+  const headerHTML = `<tr>${headers.map((h) => `<th>${escapeHTML(h)}</th>`).join("")}</tr>`;
+
+  const dataHTML = rows
+    .map(
+      (row) =>
+        `<tr>${visibleColumns
+          .map((col) => {
+            const value = row.getValue(col.id);
+            return `<td>${escapeHTML(String(value ?? ""))}</td>`;
+          })
+          .join("")}</tr>`
+    )
+    .join("");
+
+  return `<table border="1" cellpadding="5" cellspacing="0"><thead>${headerHTML}</thead><tbody>${dataHTML}</tbody></table>`;
+};
+
+export const copyTableToMarkdown = async (
+  table: Table<any>
+): Promise<boolean> => {
+  try {
+    const markdownContent = generateMarkdownContent(table);
+    const htmlContent = generateHTMLContent(table);
+
+    // Use multiformat clipboard API
+    const clipboardItem = new ClipboardItem({
+      "text/plain": new Blob([markdownContent], { type: "text/plain" }),
+      "text/html": new Blob([htmlContent], { type: "text/html" }),
+    });
+
+    await navigator.clipboard.write([clipboardItem]);
+    return true;
+  } catch (error) {
+    console.error("Copy markdown failed:", error);
+    return false;
+  }
+};
