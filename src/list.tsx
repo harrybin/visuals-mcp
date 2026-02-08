@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import type { ListToolInput, ListItem, ListState } from "../types";
 
 type ListViewProps = {
@@ -24,6 +24,12 @@ export function ListView({ listData, onStateChange }: ListViewProps) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  // Sync items when listData changes
+  useEffect(() => {
+    setItems(listData.items);
+    setCheckedIds(new Set(listData.items.filter((i) => i.checked).map((i) => i.id)));
+  }, [listData.items]);
 
   const showToast = (message: string) => {
     setToast(message);
