@@ -1,0 +1,86 @@
+{
+  "title": "Product Catalog",
+  "masterItems": [
+    {
+      "id": "product1",
+      "label": "Smart Watch Pro",
+      "description": "Advanced fitness tracking with heart rate monitoring",
+      "icon": "⌚"
+    },
+    {
+      "id": "product2",
+      "label": "Wireless Earbuds",
+      "description": "Premium sound quality with active noise cancellation",
+      "icon": "🎧"
+    },
+    {
+      "id": "product3",
+      "label": "Laptop Stand",
+      "description": "Ergonomic aluminum stand for better posture",
+      "icon": "💻"
+    },
+    {
+      "id": "product4",
+      "label": "USB-C Hub",
+      "description": "7-in-1 connectivity hub with 4K HDMI support",
+      "icon": "🔌"
+    }
+  ],
+  "detailContents": {
+    "product1": {
+      "type": "table",
+      "data": {
+        "title": "Smart Watch Pro Specifications",
+        "columns": [
+          { "key": "feature", "label": "Feature", "type": "string" },
+          { "key": "value", "label": "Value", "type": "string" }
+        ],
+        "rows": [
+          { "feature": "Display", "value": "1.4\" AMOLED" },
+          { "feature": "Battery Life", "value": "7 days" },
+          { "feature": "Water Resistance", "value": "5 ATM" },
+          { "feature": "Sensors", "value": "Heart Rate, SpO2, GPS" },
+          { "feature": "Price", "value": "$299" }
+        ],
+        "pageSize": 10,
+        "allowRowSelection": false
+      }
+    },
+    "product2": {
+      "type": "table",
+      "data": {
+        "title": "Wireless Earbuds Specifications",
+        "columns": [
+          { "key": "feature", "label": "Feature", "type": "string" },
+          { "key": "value", "label": "Value", "type": "string" }
+        ],
+        "rows": [
+          { "feature": "Battery Life", "value": "8 hours + 24 hours case" },
+          { "feature": "Noise Cancellation", "value": "Active ANC" },
+          { "feature": "Water Resistance", "value": "IPX4" },
+          { "feature": "Bluetooth", "value": "5.2" },
+          { "feature": "Price", "value": "$149" }
+        ],
+        "pageSize": 10,
+        "allowRowSelection": false
+      }
+    },
+    "product3": {
+      "type": "text",
+      "data": {
+        "content": "<h3>Laptop Stand - Premium Aluminum</h3>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Height adjustable from 2.5\" to 6\"</li>\n<li>Supports laptops up to 17\"</li>\n<li>Anti-slip silicone pads</li>\n<li>Cable management system</li>\n<li>Heat dissipation design</li>\n</ul>\n<p><strong>Materials:</strong> Anodized aluminum alloy</p>\n<p><strong>Weight:</strong> 1.2 lbs</p>\n<p><strong>Price:</strong> $49.99</p>",
+        "isHtml": true
+      }
+    },
+    "product4": {
+      "type": "text",
+      "data": {
+        "content": "USB-C Hub - 7-in-1 Multiport Adapter\n\nPorts:\n- 1x 4K HDMI (60Hz)\n- 3x USB 3.0 (5Gbps)\n- 1x USB-C PD (100W)\n- 1x SD card reader\n- 1x microSD card reader\n\nCompatibility:\n- MacBook Pro/Air\n- iPad Pro\n- Surface Pro\n- Any USB-C device\n\nConstruction: Aluminum housing\nCable Length: 6 inches\nPrice: $59.99",
+        "isHtml": false
+      }
+    }
+  },
+  "defaultSelectedId": "product1",
+  "masterWidth": 280,
+  "orientation": "horizontal"
+}
