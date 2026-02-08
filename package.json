@@ -9,9 +9,10 @@
     },
     "scripts": {
         "build": "npm run build:ui && npm run build:server",
-        "build:ui": "npm run build:table && npm run build:image",
+        "build:ui": "npm run build:table && npm run build:image && npm run build:master-detail",
         "build:table": "vite build --config vite.config.table.ts",
         "build:image": "vite build --config vite.config.image.ts",
+        "build:master-detail": "vite build --config vite.config.master-detail.ts",
         "build:server": "tsc -p tsconfig.server.json",
         "serve": "node dist/server.js",
         "dev": "concurrently \"vite build --watch\" \"tsx watch server.ts\""
