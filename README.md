@@ -1,6 +1,6 @@
 # MCP Visuals Server
 
-An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table and **image previews** with metadata.
+An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, and **customizable lists** with drag-and-drop reordering.
 
 ## Features
 
@@ -12,6 +12,7 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Pagination**: Customizable page sizes (5, 10, 20, 50, 100 rows)
 - **Column Visibility**: Toggle which columns are displayed
 - **Row Selection**: Select individual rows or all rows
+- **Export**: Copy as CSV, TSV, or export to PDF
 - **Agent Integration**: Table state (selections, filters, sorting) automatically sent back to the LLM via `updateModelContext`
 - **Theme Integration**: Respects VS Code theme colors and fonts
 - **Responsive**: Works on different screen sizes
@@ -22,6 +23,20 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Rich Image Cards**: Display images with title, caption, and metadata
 - **Metadata Display**: Show filename, dimensions, and file size
 - **Flexible Sources**: Support URLs and data URIs
+- **Local File Support**: Automatically converts local file paths to data URIs
+- **Theme Integration**: Respects VS Code theme colors and fonts
+
+### List Visualization
+
+- **Interactive Lists**: Display any type of list with rich formatting
+- **Drag-and-Drop Reordering**: Easily reorder items by dragging
+- **Checkboxes**: Optional checkboxes for task lists and selections
+- **Image Thumbnails**: Show images alongside list items
+- **Compact Mode**: Toggle between comfortable and compact layouts
+- **Export Options**: Copy as plain text, CSV, or JSON
+- **Individual Item Copy**: Quick copy button for each item
+- **Subtext Support**: Secondary text/description for each item
+- **Metadata**: Attach custom metadata to items
 - **Theme Integration**: Respects VS Code theme colors and fonts
 
 ## Screenshot
@@ -200,6 +215,71 @@ Displays an image preview card with optional metadata.
   "height": 800
 }
 ```
+
+### Tool: `display_list`
+
+Displays an interactive, customizable list with drag-and-drop reordering, checkboxes, and export functionality.
+
+**Input:**
+
+```json
+{
+  "items": [
+    {
+      "id": "1",
+      "content": "Review pull requests",
+      "checked": true,
+      "subtext": "3 PRs pending"
+    },
+    {
+      "id": "2",
+      "content": "Write documentation",
+      "checked": false,
+      "subtext": "API docs needed",
+      "image": "https://example.com/doc-icon.png"
+    },
+    {
+      "id": "3",
+      "content": "Fix critical bugs",
+      "checked": true,
+      "subtext": "2 issues remaining"
+    }
+  ],
+  "title": "Development Tasks",
+  "allowReorder": true,
+  "allowCheckboxes": true,
+  "compact": false,
+  "showImages": true
+}
+```
+
+**Item Properties:**
+
+- `id` (required): Unique identifier for the item
+- `content` (required): Main text content
+- `checked`: Whether the item is checked (default: `false`)
+- `image`: Optional image URL or data URI for thumbnail
+- `subtext`: Optional secondary text/description
+- `metadata`: Optional custom metadata object
+
+**List Options:**
+
+- `title`: Display title above the list
+- `allowReorder`: Enable drag-and-drop reordering (default: `true`)
+- `allowCheckboxes`: Show checkboxes for items (default: `true`)
+- `compact`: Use compact layout mode (default: `false`)
+- `showImages`: Display item images if available (default: `true`)
+
+**Features:**
+
+- Drag items to reorder (when `allowReorder` is true)
+- Check/uncheck items (when `allowCheckboxes` is true)
+- Export as plain text, CSV, or JSON
+- Copy individual items with hover button
+- Image thumbnails for visual context
+- Responsive layout with theme support
+
+For more examples, see [LIST_EXAMPLES.md](./doc/LIST_EXAMPLES.md)
 
 ## Example: Using in VS Code with MCP
 
