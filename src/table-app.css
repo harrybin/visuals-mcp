@@ -55,32 +55,32 @@ body.theme-light {
 }
 
 .table-container {
-  padding: 16px;
+  padding: 8px;
   max-width: 100%;
 }
 
 .table-title {
-  font-size: var(--font-heading-lg-size, 24px);
+  font-size: var(--font-heading-lg-size, 18px);
   font-weight: var(--font-weight-semibold, 600);
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: var(--color-text-primary, #000000);
 }
 
 /* Controls */
 .controls {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .column-visibility summary {
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: var(--color-background-secondary, #f5f5f5);
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-md, 4px);
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   user-select: none;
 }
 
@@ -90,13 +90,13 @@ body.theme-light {
 
 .column-list {
   margin-top: 8px;
-  padding: 12px;
+  padding: 8px;
   background: var(--color-background-primary, #ffffff);
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-md, 4px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .column-list label {
@@ -104,7 +104,7 @@ body.theme-light {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
 }
 
 .column-list input[type="checkbox"] {
@@ -114,18 +114,18 @@ body.theme-light {
 /* Export buttons */
 .export-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .export-btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-md, 4px);
   background: var(--color-background-secondary, #f5f5f5);
   color: var(--color-text-primary, #000000);
   cursor: pointer;
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   font-family: var(--font-sans, inherit);
   font-weight: var(--font-weight-medium, 500);
   transition: background 0.2s;
@@ -144,7 +144,7 @@ body.theme-light {
   overflow-x: auto;
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-lg, 8px);
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 table {
@@ -161,11 +161,11 @@ thead {
 }
 
 th {
-  padding: 12px;
+  padding: 8px;
   text-align: left;
   font-weight: var(--font-weight-semibold, 600);
   border-bottom: 2px solid var(--color-border-primary, #ddd);
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   color: var(--color-text-primary, #000000);
 }
 
@@ -183,16 +183,16 @@ th .sortable:hover {
 
 .filter-input {
   display: flex;
-  gap: 4px;
-  margin-top: 4px;
+  gap: 2px;
+  margin-top: 2px;
 }
 
 .filter-input input {
   flex: 1;
-  padding: 4px 8px;
+  padding: 3px 6px;
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-sm, 3px);
-  font-size: var(--font-text-sm-size, 12px);
+  font-size: var(--font-text-sm-size, 11px);
   font-family: var(--font-sans, inherit);
   background: var(--color-background-primary, #ffffff);
   color: var(--color-text-primary, #000000);
@@ -204,7 +204,7 @@ th .sortable:hover {
 }
 
 .filter-btn {
-  padding: 4px 8px;
+  padding: 3px 6px;
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-sm, 3px);
   background: var(--color-background-secondary, #f5f5f5);
@@ -217,9 +217,9 @@ th .sortable:hover {
 }
 
 td {
-  padding: 10px 12px;
+  padding: 6px 8px;
   border-bottom: 1px solid var(--color-border-secondary, #eee);
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   color: var(--color-text-primary, #000000);
 }
 
@@ -237,8 +237,8 @@ tr.selected:hover {
 
 /* Checkbox styling */
 input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   cursor: pointer;
 }
 
@@ -247,29 +247,29 @@ input[type="checkbox"] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .pagination-info {
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   color: var(--color-text-secondary, #666666);
 }
 
 .pagination-controls {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
 .pagination-controls button {
-  padding: 6px 12px;
+  padding: 5px 10px;
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-md, 4px);
   background: var(--color-background-primary, #ffffff);
   color: var(--color-text-primary, #000000);
   cursor: pointer;
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   font-family: var(--font-sans, inherit);
 }
 
@@ -283,13 +283,13 @@ input[type="checkbox"] {
 }
 
 .pagination-controls select {
-  padding: 6px 10px;
+  padding: 5px 8px;
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-md, 4px);
   background: var(--color-background-primary, #ffffff);
   color: var(--color-text-primary, #000000);
   cursor: pointer;
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   font-family: var(--font-sans, inherit);
 }
 
@@ -303,12 +303,12 @@ input[type="checkbox"] {
   position: fixed;
   top: 16px;
   right: 16px;
-  padding: 12px 20px;
+  padding: 8px 16px;
   background: var(--color-background-selected, #e6f2ff);
   color: var(--color-text-primary, #000000);
   border: 1px solid var(--color-border-focus, #0066cc);
   border-radius: var(--border-radius-md, 4px);
-  font-size: var(--font-text-sm-size, 13px);
+  font-size: var(--font-text-sm-size, 12px);
   font-weight: var(--font-weight-medium, 500);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
@@ -329,12 +329,12 @@ input[type="checkbox"] {
 /* Responsive */
 @media (max-width: 768px) {
   .table-container {
-    padding: 12px;
+    padding: 8px;
   }
   
   th, td {
-    padding: 8px;
-    font-size: 12px;
+    padding: 6px;
+    font-size: 11px;
   }
   
   .pagination {
