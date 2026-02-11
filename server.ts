@@ -15,6 +15,7 @@ import {
   TableToolInputSchema,
   QueryTableDataInputSchema,
   ImageToolInputSchema,
+  ListToolInputSchema,
 } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -253,6 +254,84 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: "display_list",
+        description:
+          "Display an interactive, customizable list with optional checkboxes, drag-and-drop reordering, image thumbnails, and copy/export functionality. " +
+          "Perfect for displaying any type of list: tasks, items, options, files, or any sequential data. " +
+          "Features include compact/comfortable views, individual item copy, and bulk export (CSV, JSON, text).",
+        inputSchema: {
+          type: "object",
+          properties: {
+            items: {
+              type: "array",
+              description: "Array of list items to display",
+              items: {
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
+                    description: "Unique identifier for the list item",
+                  },
+                  content: {
+                    type: "string",
+                    description: "Text content of the list item",
+                  },
+                  checked: {
+                    type: "boolean",
+                    default: false,
+                    description: "Whether the item is checked",
+                  },
+                  image: {
+                    type: "string",
+                    description: "Optional image URL or data URI for the item",
+                  },
+                  subtext: {
+                    type: "string",
+                    description: "Optional secondary text/description",
+                  },
+                  metadata: {
+                    type: "object",
+                    description: "Optional metadata for the item",
+                  },
+                },
+                required: ["id", "content"],
+              },
+            },
+            title: {
+              type: "string",
+              description: "Optional title for the list",
+            },
+            allowReorder: {
+              type: "boolean",
+              default: true,
+              description: "Allow drag-and-drop reordering",
+            },
+            allowCheckboxes: {
+              type: "boolean",
+              default: true,
+              description: "Show checkboxes for items",
+            },
+            compact: {
+              type: "boolean",
+              default: false,
+              description: "Use compact layout mode",
+            },
+            showImages: {
+              type: "boolean",
+              default: true,
+              description: "Display item images if available",
+            },
+          },
+          required: ["items"],
+        },
+        _meta: {
+          ui: {
+            resourceUri: "list://display",
+            visibility: ["model", "app"],
+          },
+        },
+      },
     ],
   };
 });
@@ -373,6 +452,40 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  if (name === "display_list") {
+    const input = ListToolInputSchema.parse(args);
+
+    // Convert image file paths to data URIs if present
+    const processedItems = input.items.map((item) => {
+      if (item.image) {
+        return {
+          ...item,
+          image: fileToDataUri(item.image),
+        };
+      }
+      return item;
+    });
+
+    const processedInput = {
+      ...input,
+      items: processedItems,
+    };
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Displaying list with ${input.items.length} items.${input.title ? ` Title: ${input.title}` : ""}`,
+        },
+      ],
+      _meta: {
+        ui: {
+          data: processedInput,
+        },
+      },
+    };
+  }
+
   throw new Error(`Unknown tool: ${name}`);
 });
 
@@ -393,6 +506,13 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         uri: "image://preview",
         name: "Image Preview Card",
         description: "HTML resource for rendering image preview cards",
+        mimeType: "text/html",
+      },
+      {
+        uri: "list://display",
+        name: "Interactive List Display",
+        description:
+          "HTML resource for rendering interactive lists with drag-and-drop reordering, checkboxes, and export",
         mimeType: "text/html",
       },
     ],
@@ -429,6 +549,27 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   if (uri === "image://preview") {
     try {
       const htmlPath = join(__dirname, "mcp-image.html");
+      const htmlContent = readFileSync(htmlPath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "text/html",
+            text: htmlContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to read HTML resource. Make sure to run 'npm run build' first. Error: ${error}`,
+      );
+    }
+  }
+
+  if (uri === "list://display") {
+    try {
+      const htmlPath = join(__dirname, "mcp-list.html");
       const htmlContent = readFileSync(htmlPath, "utf-8");
 
       return {
