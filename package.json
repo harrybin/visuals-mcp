@@ -15,7 +15,8 @@
         "build:list": "vite build --config vite.config.list.ts",
         "build:server": "tsc -p tsconfig.server.json",
         "serve": "node dist/server.js",
-        "dev": "concurrently \"vite build --watch\" \"tsx watch server.ts\""
+        "dev": "concurrently \"vite build --watch\" \"tsx watch server.ts\"",
+        "publish:npm": "npm publish --registry https://registry.npmjs.org --access public"
     },
     "keywords": [
         "mcp",

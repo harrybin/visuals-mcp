@@ -17,6 +17,7 @@ import {
   exportTableToPDF,
   copyTableToCSV,
   copyTableToTSV,
+  copyTableToMarkdown,
 } from "./table-export";
 
 type TableViewProps = {
@@ -235,6 +236,16 @@ export function TableView({ tableData, onStateChange }: TableViewProps) {
             title="Copy as TSV to clipboard"
           >
             📋 Copy TSV
+          </button>
+          <button
+            className="export-btn"
+            onClick={async () => {
+              const ok = await copyTableToMarkdown(table);
+              showToast(ok ? "Markdown copied to clipboard!" : "Copy failed");
+            }}
+            title="Copy as Markdown to clipboard"
+          >
+            📋 Copy Markdown
           </button>
           <button
             className="export-btn"
