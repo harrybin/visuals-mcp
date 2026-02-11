@@ -106,6 +106,7 @@ export function TreeView({ treeData, onStateChange }: TreeViewProps) {
 
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [dynamicHeight, setDynamicHeight] = useState<string>("auto");
 
   const showToast = (message: string) => {
     setToast(message);
@@ -141,6 +142,36 @@ export function TreeView({ treeData, onStateChange }: TreeViewProps) {
     const summary = `${expandedNodes.size} nodes expanded${selectedNode ? ", 1 node selected" : ""}`;
     onStateChange(state, summary);
   }, [expandedNodes, selectedNode, onStateChange]);
+
+  // Calculate dynamic height based on expanded nodes
+  useEffect(() => {
+    const calculateHeight = () => {
+      const countVisibleNodes = (nodes: TreeNode[]): number => {
+        return nodes.reduce((sum, node) => {
+          const visible =
+            node.children && expandedNodes.has(node.id)
+              ? countVisibleNodes(node.children)
+              : 0;
+          return sum + 1 + visible;
+        }, 0);
+      };
+
+      const visibleNodeCount = countVisibleNodes(treeData.nodes);
+      // Approximate: 40px per node, plus some padding
+      const headerHeight = treeData.title ? 60 : 0;
+      const controlsHeight = 80;
+      const contentHeight = Math.max(visibleNodeCount * 40, 200);
+      const totalHeight = headerHeight + controlsHeight + contentHeight;
+
+      // Limit to 80% of viewport height to leave room for chat
+      const maxHeight = Math.min(totalHeight, window.innerHeight * 0.8);
+      setDynamicHeight(`${maxHeight}px`);
+    };
+
+    calculateHeight();
+    window.addEventListener("resize", calculateHeight);
+    return () => window.removeEventListener("resize", calculateHeight);
+  }, [treeData, expandedNodes]);
 
   const toggleNode = (nodeId: string) => {
     setExpandedNodes((prev) => {
@@ -189,10 +220,18 @@ export function TreeView({ treeData, onStateChange }: TreeViewProps) {
 
       <div className="controls">
         <div className="tree-controls">
-          <button className="tree-btn" onClick={expandAll} title="Expand all nodes">
+          <button
+            className="tree-btn"
+            onClick={expandAll}
+            title="Expand all nodes"
+          >
             ⊞ Expand All
           </button>
-          <button className="tree-btn" onClick={collapseAll} title="Collapse all nodes">
+          <button
+            className="tree-btn"
+            onClick={collapseAll}
+            title="Collapse all nodes"
+          >
             ⊟ Collapse All
           </button>
           <span className="tree-info">{totalNodes} total nodes</span>
@@ -236,7 +275,7 @@ export function TreeView({ treeData, onStateChange }: TreeViewProps) {
         </div>
       </div>
 
-      <div className="tree-wrapper">
+      <div className="tree-wrapper" style={{ height: dynamicHeight }}>
         {treeData.nodes.map((node) => (
           <TreeNodeComponent
             key={node.id}
