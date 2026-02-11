@@ -145,6 +145,7 @@ body.theme-light {
   border: 1px solid var(--color-border-primary, #ddd);
   border-radius: var(--border-radius-lg, 8px);
   margin-bottom: 8px;
+  height: auto;
 }
 
 table {

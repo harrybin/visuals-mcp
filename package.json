@@ -1,7 +1,7 @@
 {
     "name": "@harrybin/visuals-mcp",
-    "version": "1.3.0",
-    "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, and customizable lists",
+    "version": "1.4.0",
+    "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, tree views for hierarchical data, and customizable lists",
     "type": "module",
     "main": "dist/server.js",
     "bin": {
@@ -9,13 +9,15 @@
     },
     "scripts": {
         "build": "npm run build:ui && npm run build:server",
-        "build:ui": "npm run build:table && npm run build:image && npm run build:list",
+        "build:ui": "npm run build:table && npm run build:image && npm run build:tree && npm run build:list",
         "build:table": "vite build --config vite.config.table.ts",
         "build:image": "vite build --config vite.config.image.ts",
+        "build:tree": "vite build --config vite.config.tree.ts",
         "build:list": "vite build --config vite.config.list.ts",
         "build:server": "tsc -p tsconfig.server.json",
         "serve": "node dist/server.js",
-        "dev": "concurrently \"vite build --watch\" \"tsx watch server.ts\"",
+        "dev": "concurrently \"npm run watch:ui\" \"tsx watch server.ts\"",
+        "watch:ui": "concurrently \"vite build --watch --config vite.config.table.ts\" \"vite build --watch --config vite.config.image.ts\" \"vite build --watch --config vite.config.tree.ts\" \"vite build --watch --config vite.config.list.ts\"",
         "publish:npm": "npm publish --registry https://registry.npmjs.org --access public"
     },
     "keywords": [

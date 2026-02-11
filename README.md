@@ -1,6 +1,6 @@
 # MCP Visuals Server
 
-An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, and **customizable lists** with drag-and-drop reordering.
+An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
 
 ## Features
 
@@ -12,7 +12,7 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Pagination**: Customizable page sizes (5, 10, 20, 50, 100 rows)
 - **Column Visibility**: Toggle which columns are displayed
 - **Row Selection**: Select individual rows or all rows
-- **Export**: Copy as CSV, TSV, or export to PDF
+- **Export**: Copy as CSV/TSV or export to PDF
 - **Agent Integration**: Table state (selections, filters, sorting) automatically sent back to the LLM via `updateModelContext`
 - **Theme Integration**: Respects VS Code theme colors and fonts
 - **Responsive**: Works on different screen sizes
@@ -25,6 +25,19 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Flexible Sources**: Support URLs and data URIs
 - **Local File Support**: Automatically converts local file paths to data URIs
 - **Theme Integration**: Respects VS Code theme colors and fonts
+
+### Tree View
+
+- **Hierarchical Data Display**: Interactive tree structure for nested data
+- **Expand/Collapse**: Click to expand or collapse nodes
+- **Node Selection**: Select individual nodes to highlight them
+- **Metadata Support**: Display optional metadata for each node
+- **Icons**: Add custom icons/emojis to nodes
+- **Bulk Operations**: Expand all or collapse all nodes at once
+- **Export Options**: Copy tree to clipboard, export as HTML, or save as image (PNG)
+- **Agent Integration**: Tree state (expanded nodes, selection) sent back to the LLM
+- **Theme Integration**: Respects VS Code theme colors and fonts
+- **Use Cases**: File systems, org charts, nested categories, JSON/XML structures
 
 ### List Visualization
 
@@ -48,6 +61,10 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 ![List Example](doc/list-example.png)
 
 *Interactive list with drag-and-drop reordering, checkboxes, and image thumbnails*
+
+![Tree Example](doc/tree-example.png)
+
+*Interactive tree view with expand/collapse, node selection, and export options*
 
 ## Installation
 
@@ -98,8 +115,6 @@ npm run serve
 ```
 
 
-## Example: Using in VS Code with MCP
-
 ### 1. Configure MCP Server
 
 **For VS Code:** This workspace includes MCP configuration in `.vscode/settings.json`.
@@ -122,51 +137,6 @@ To add globally, update your VS Code settings:
 
 **For Claude Desktop:** See `claude_desktop_config.json` for example configuration.
 
-**For detailed setup:** See [MCP_SETUP.md](./MCP_SETUP.md)
-
-### 2. Example Agent Interaction
-
-**User:** "Show me a table of the top 10 GitHub repositories by stars"
-
-**Agent:**
-```typescript
-// Agent calls display_table tool
-{
-  "columns": [
-    { "key": "name", "label": "Repository", "type": "string" },
-    { "key": "stars", "label": "Stars", "type": "number" },
-    { "key": "language", "label": "Language", "type": "string" },
-    { "key": "updated", "label": "Last Updated", "type": "date" }
-  ],
-  "rows": [
-    { "name": "freeCodeCamp/freeCodeCamp", "stars": 385000, "language": "JavaScript", "updated": "2024-02-01" },
-    { "name": "996icu/996.ICU", "stars": 268000, "language": "Markdown", "updated": "2023-12-15" },
-    // ... more rows
-  ],
-  "title": "Top GitHub Repositories by Stars"
-}
-```
-
-The agent sees an interactive table where the user can:
-- Sort by any column (click header)
-- Filter repositories by name/language
-- Select specific repos
-- Change page size
-
-When the user selects rows or applies filters, the agent receives updates via `updateModelContext`:
-
-```json
-{
-  "type": "table_state",
-  "state": {
-    "sortBy": [{ "columnKey": "stars", "direction": "desc" }],
-    "filters": { "language": "JavaScript" },
-    "selectedRowIds": ["0", "2", "5"],
-    "visibleColumns": ["name", "stars", "language"]
-  },
-  "summary": "3 rows selected, 1 filters active, 1 columns sorted"
-}
-```
 
 ## License
 

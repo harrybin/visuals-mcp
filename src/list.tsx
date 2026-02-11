@@ -18,18 +18,41 @@ const copyToClipboard = async (text: string): Promise<boolean> => {
 export function ListView({ listData, onStateChange }: ListViewProps) {
   const [items, setItems] = useState<ListItem[]>(listData.items);
   const [checkedIds, setCheckedIds] = useState<Set<string>>(
-    () => new Set(listData.items.filter((i) => i.checked).map((i) => i.id))
+    () => new Set(listData.items.filter((i) => i.checked).map((i) => i.id)),
   );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [dynamicHeight, setDynamicHeight] = useState<string>("auto");
 
   // Sync items when listData changes
   useEffect(() => {
     setItems(listData.items);
-    setCheckedIds(new Set(listData.items.filter((i) => i.checked).map((i) => i.id)));
+    setCheckedIds(
+      new Set(listData.items.filter((i) => i.checked).map((i) => i.id)),
+    );
   }, [listData.items]);
+
+  // Calculate dynamic height based on items
+  useEffect(() => {
+    const calculateHeight = () => {
+      const itemCount = items.length;
+      // Approximate: 48px per item
+      const itemHeight = Math.max(itemCount * 48, 150);
+      const headerHeight = 40;
+      const controlsHeight = 50;
+      const totalHeight = headerHeight + controlsHeight + itemHeight;
+
+      // Limit to 80% of viewport height to leave room for chat
+      const maxHeight = Math.min(totalHeight, window.innerHeight * 0.8);
+      setDynamicHeight(`${maxHeight}px`);
+    };
+
+    calculateHeight();
+    window.addEventListener("resize", calculateHeight);
+    return () => window.removeEventListener("resize", calculateHeight);
+  }, [items.length]);
 
   const showToast = (message: string) => {
     setToast(message);
@@ -144,7 +167,7 @@ export function ListView({ listData, onStateChange }: ListViewProps) {
         metadata: item.metadata,
       })),
       null,
-      2
+      2,
     );
     const ok = await copyToClipboard(json);
     showToast(ok ? "JSON copied to clipboard!" : "Copy failed");
@@ -154,7 +177,9 @@ export function ListView({ listData, onStateChange }: ListViewProps) {
     const text = items
       .map((item, idx) => {
         const checkbox = checkedIds.has(item.id) ? "[x]" : "[ ]";
-        const prefix = listData.allowCheckboxes ? `${checkbox} ` : `${idx + 1}. `;
+        const prefix = listData.allowCheckboxes
+          ? `${checkbox} `
+          : `${idx + 1}. `;
         const main = item.content;
         const sub = item.subtext ? ` - ${item.subtext}` : "";
         return `${prefix}${main}${sub}`;
@@ -186,7 +211,10 @@ export function ListView({ listData, onStateChange }: ListViewProps) {
         </div>
       </div>
 
-      <div className={`list-container ${listData.compact ? "compact" : ""}`}>
+      <div
+        className={`list-container ${listData.compact ? "compact" : ""}`}
+        style={{ height: dynamicHeight }}
+      >
         {items.length === 0 ? (
           <div className="list-empty">No items to display</div>
         ) : (
@@ -206,9 +234,7 @@ export function ListView({ listData, onStateChange }: ListViewProps) {
               onDragEnd={handleDragEnd}
               onClick={() => setSelectedId(item.id)}
             >
-              {listData.allowReorder && (
-                <span className="drag-handle">⋮⋮</span>
-              )}
+              {listData.allowReorder && <span className="drag-handle">⋮⋮</span>}
 
               {listData.allowCheckboxes && (
                 <input
@@ -258,11 +284,7 @@ export function ListView({ listData, onStateChange }: ListViewProps) {
         <span>
           {items.length} item{items.length !== 1 ? "s" : ""}
         </span>
-        {listData.allowCheckboxes && (
-          <span>
-            {checkedIds.size} checked
-          </span>
-        )}
+        {listData.allowCheckboxes && <span>{checkedIds.size} checked</span>}
       </div>
     </div>
   );
