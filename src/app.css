@@ -12,6 +12,15 @@ body {
   color: var(--color-text-primary, #000000);
   font-size: var(--font-text-md-size, 14px);
   line-height: var(--font-text-md-line-height, 1.5);
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 :root.theme-dark,

@@ -1,6 +1,6 @@
 # MCP Visuals Server
 
-An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, and **master-detail views** for browsing collections.
+An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **master-detail views** for browsing collections, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
 
 ## Features
 
@@ -12,6 +12,7 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Pagination**: Customizable page sizes (5, 10, 20, 50, 100 rows)
 - **Column Visibility**: Toggle which columns are displayed
 - **Row Selection**: Select individual rows or all rows
+- **Export**: Copy as CSV/TSV or export to PDF
 - **Agent Integration**: Table state (selections, filters, sorting) automatically sent back to the LLM via `updateModelContext`
 - **Theme Integration**: Respects VS Code theme colors and fonts
 - **Responsive**: Works on different screen sizes
@@ -22,6 +23,7 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Rich Image Cards**: Display images with title, caption, and metadata
 - **Metadata Display**: Show filename, dimensions, and file size
 - **Flexible Sources**: Support URLs and data URIs
+- **Local File Support**: Automatically converts local file paths to data URIs
 - **Theme Integration**: Respects VS Code theme colors and fonts
 
 ### Master-Detail View
@@ -34,15 +36,66 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Rich Master List**: Display items with icons, labels, and descriptions
 - **Theme Integration**: Consistent theming across all components
 
-## Screenshot
+### Tree View
+
+- **Hierarchical Data Display**: Interactive tree structure for nested data
+- **Expand/Collapse**: Click to expand or collapse nodes
+- **Node Selection**: Select individual nodes to highlight them
+- **Metadata Support**: Display optional metadata for each node
+- **Icons**: Add custom icons/emojis to nodes
+- **Bulk Operations**: Expand all or collapse all nodes at once
+- **Export Options**: Copy tree to clipboard, export as HTML, or save as image (PNG)
+- **Agent Integration**: Tree state (expanded nodes, selection) sent back to the LLM
+- **Theme Integration**: Respects VS Code theme colors and fonts
+- **Use Cases**: File systems, org charts, nested categories, JSON/XML structures
+
+### List Visualization
+
+- **Interactive Lists**: Display any type of list with rich formatting
+- **Drag-and-Drop Reordering**: Easily reorder items by dragging
+- **Checkboxes**: Optional checkboxes for task lists and selections
+- **Image Thumbnails**: Show images alongside list items
+- **Compact Mode**: Toggle between comfortable and compact layouts
+- **Export Options**: Copy as plain text, CSV, or JSON
+- **Individual Item Copy**: Quick copy button for each item
+- **Subtext Support**: Secondary text/description for each item
+- **Metadata**: Attach custom metadata to items
+- **Theme Integration**: Respects VS Code theme colors and fonts
+
+## Screenshots
 
 ![Table Example](doc/table-example.png)
 
 *Interactive table with sorting, filtering, pagination, and row selection*
 
+![List Example](doc/list-example.png)
+
+*Interactive list with drag-and-drop reordering, checkboxes, and image thumbnails*
+
+![Tree Example](doc/tree-example.png)
+
+*Interactive tree view with expand/collapse, node selection, and export options*
+
 ## Installation
 
-### GitHub Packages (Recommended)
+### npmjs (Recommended)
+
+In **VSCode** github Copilot Chat 
+- click on the tools icon (Configure tools...) 
+- click on "Add MCP Server"
+- click on "Install from npm"
+- enter `@harrybin/visuals-mcp` 
+- press enter / click "Install"
+
+Using command line:
+
+```bash
+npm install -g @harrybin/visuals-mcp
+visuals-mcp
+```
+
+
+### GitHub Packages
 
 1. Authenticate npm with GitHub Packages:
 
@@ -295,8 +348,6 @@ Displays a master-detail view with a list of items and detailed content panel. T
 
 See [doc/master-detail-example.json](./doc/master-detail-example.json) for a complete example.
 
-## Example: Using in VS Code with MCP
-
 ### 1. Configure MCP Server
 
 **For VS Code:** This workspace includes MCP configuration in `.vscode/settings.json`.
@@ -306,172 +357,19 @@ To add globally, update your VS Code settings:
 ```json
 {
   "github.copilot.chat.mcpServers": {
-    "table-server": {
-      "command": "tsx",
-      "args": ["D:\\harrybin\\visuals-mcp\\server.ts"]
-    }
+    "visuals-mcp": {
+			"type": "stdio",
+			"command": "node",
+			"args": [
+				"dist/server.js"
+			]
+		}
   }
 }
 ```
 
 **For Claude Desktop:** See `claude_desktop_config.json` for example configuration.
 
-**For detailed setup:** See [MCP_SETUP.md](./MCP_SETUP.md)
-
-### 2. Example Agent Interaction
-
-**User:** "Show me a table of the top 10 GitHub repositories by stars"
-
-**Agent:**
-```typescript
-// Agent calls display_table tool
-{
-  "columns": [
-    { "key": "name", "label": "Repository", "type": "string" },
-    { "key": "stars", "label": "Stars", "type": "number" },
-    { "key": "language", "label": "Language", "type": "string" },
-    { "key": "updated", "label": "Last Updated", "type": "date" }
-  ],
-  "rows": [
-    { "name": "freeCodeCamp/freeCodeCamp", "stars": 385000, "language": "JavaScript", "updated": "2024-02-01" },
-    { "name": "996icu/996.ICU", "stars": 268000, "language": "Markdown", "updated": "2023-12-15" },
-    // ... more rows
-  ],
-  "title": "Top GitHub Repositories by Stars"
-}
-```
-
-The agent sees an interactive table where the user can:
-- Sort by any column (click header)
-- Filter repositories by name/language
-- Select specific repos
-- Change page size
-
-When the user selects rows or applies filters, the agent receives updates via `updateModelContext`:
-
-```json
-{
-  "type": "table_state",
-  "state": {
-    "sortBy": [{ "columnKey": "stars", "direction": "desc" }],
-    "filters": { "language": "JavaScript" },
-    "selectedRowIds": ["0", "2", "5"],
-    "visibleColumns": ["name", "stars", "language"]
-  },
-  "summary": "3 rows selected, 1 filters active, 1 columns sorted"
-}
-```
-
-## Development
-
-### Build and Watch
-
-```bash
-# Build UI and run server with auto-reload
-npm run dev
-```
-
-### Testing with basic-host
-
-1. Clone the MCP Apps SDK:
-```bash
-git clone https://github.com/modelcontextprotocol/ext-apps.git /tmp/mcp-ext-apps
-```
-
-2. Build and run your server:
-```bash
-npm run build
-npm run serve
-```
-
-3. Start basic-host:
-```bash
-cd /tmp/mcp-ext-apps/examples/basic-host
-npm install
-SERVERS='["stdio:///path/to/mcp-table-server/server.ts"]' npm run start
-```
-
-4. Open http://localhost:8080 and test the table
-
-### Debugging
-
-Add debug logs in your React component:
-
-```typescript
-await app.sendLog({ level: "info", data: "Table rendered with X rows" });
-```
-
-Logs appear in the MCP host's console.
-
-## Data Types and Formatting
-
-The table automatically formats values based on column type:
-
-- **string**: Displayed as-is
-- **number**: Formatted with locale-aware thousands separators (e.g., `1,000`)
-- **date**: Formatted using `toLocaleDateString()` (e.g., `1/15/2024`)
-- **boolean**: Displayed as `✓` (true) or `✗` (false)
-
-## Architecture
-
-### Server Flow
-
-1. Agent calls `display_table` tool with columns and rows
-2. Server validates input with Zod schema
-3. Server stores data in memory (for `query_table_data`)
-4. Server returns resource reference (`table://display`)
-5. VS Code requests HTML resource
-6. Server reads bundled `dist/mcp-table.html` and returns it
-
-### UI Flow
-
-1. React app initializes with `useApp()` hook
-2. `ontoolinput` handler receives table data
-3. TanStack Table renders interactive table
-4. User interactions (sort, filter, select) update local state
-5. `useEffect` sends state changes to agent via `updateModelContext`
-6. Agent sees current table state and can respond
-
-### Theme Integration
-
-The UI uses CSS variables from the host context:
-- `--color-background-primary`, `--color-background-secondary`
-- `--color-text-primary`, `--color-text-secondary`
-- `--font-sans`, `--font-mono`
-- `--border-radius-md`, etc.
-
-Applied automatically via `useHostStyles(app)` hook.
-
-## Advanced Usage
-
-### Custom Column Rendering
-
-Modify [src/table-app.tsx](src/table-app.tsx) to add custom cell renderers:
-
-```typescript
-cell: ({ getValue, row }) => {
-  const value = getValue();
-  
-  if (col.key === "avatar") {
-    return <img src={value} alt="Avatar" />;
-  }
-  
-  if (col.key === "status") {
-    return <span className={`badge ${value}`}>{value}</span>;
-  }
-  
-  // Default rendering...
-}
-```
-
-### Server-Side Filtering for Large Data
-
-For datasets with >1000 rows, implement server-side filtering:
-
-1. Agent calls `display_table` with initial page
-2. UI calls `query_table_data` when user applies filter
-3. Server returns filtered subset
-4. UI updates with new data
 
 ## License
 

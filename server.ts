@@ -16,6 +16,8 @@ import {
   QueryTableDataInputSchema,
   ImageToolInputSchema,
   MasterDetailToolInputSchema,
+  TreeToolInputSchema,
+  ListToolInputSchema,
 } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -309,7 +311,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                       type: { type: "string", enum: ["table"] },
                       data: {
                         type: "object",
-                        description: "Table data following display_table schema",
+                        description:
+                          "Table data following display_table schema",
                       },
                     },
                     required: ["type", "data"],
@@ -320,7 +323,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                       type: { type: "string", enum: ["image"] },
                       data: {
                         type: "object",
-                        description: "Image data following display_image schema",
+                        description:
+                          "Image data following display_image schema",
                       },
                     },
                     required: ["type", "data"],
@@ -372,6 +376,154 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         _meta: {
           ui: {
             resourceUri: "master-detail://display",
+            visibility: ["model", "app"],
+          },
+        },
+      },
+      {
+        name: "display_tree",
+        description:
+          "Display an interactive tree view for hierarchical data structures. " +
+          "Use this tool to visualize file systems, organizational charts, nested categories, JSON/XML structures, or any hierarchical relationships. " +
+          "Supports node expansion/collapse, metadata display, and export functionality.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            nodes: {
+              type: "array",
+              description: "Array of root tree nodes",
+              items: {
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
+                    description: "Unique identifier for the node",
+                  },
+                  label: {
+                    type: "string",
+                    description: "Display label for the node",
+                  },
+                  children: {
+                    type: "array",
+                    description: "Optional child nodes",
+                    items: { type: "object" },
+                  },
+                  metadata: {
+                    type: "object",
+                    description: "Optional metadata for the node",
+                  },
+                  icon: {
+                    type: "string",
+                    description: "Optional icon/emoji for the node",
+                  },
+                  expanded: {
+                    type: "boolean",
+                    default: false,
+                    description:
+                      "Whether the node should be initially expanded",
+                  },
+                },
+                required: ["id", "label"],
+              },
+            },
+            title: {
+              type: "string",
+              description: "Optional title for the tree view",
+            },
+            expandAll: {
+              type: "boolean",
+              default: false,
+              description: "Expand all nodes initially",
+            },
+            showMetadata: {
+              type: "boolean",
+              default: true,
+              description: "Show metadata in tree nodes",
+            },
+          },
+          required: ["nodes"],
+        },
+        _meta: {
+          ui: {
+            resourceUri: "tree://display",
+            visibility: ["model", "app"],
+          },
+        },
+      },
+      {
+        name: "display_list",
+        description:
+          "Display an interactive, customizable list with optional checkboxes, drag-and-drop reordering, image thumbnails, and copy/export functionality. " +
+          "Perfect for displaying any type of list: tasks, items, options, files, or any sequential data. " +
+          "Features include compact/comfortable views, individual item copy, and bulk export (CSV, JSON, text).",
+        inputSchema: {
+          type: "object",
+          properties: {
+            items: {
+              type: "array",
+              description: "Array of list items to display",
+              items: {
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
+                    description: "Unique identifier for the list item",
+                  },
+                  content: {
+                    type: "string",
+                    description: "Text content of the list item",
+                  },
+                  checked: {
+                    type: "boolean",
+                    default: false,
+                    description: "Whether the item is checked",
+                  },
+                  image: {
+                    type: "string",
+                    description: "Optional image URL or data URI for the item",
+                  },
+                  subtext: {
+                    type: "string",
+                    description: "Optional secondary text/description",
+                  },
+                  metadata: {
+                    type: "object",
+                    description: "Optional metadata for the item",
+                  },
+                },
+                required: ["id", "content"],
+              },
+            },
+            title: {
+              type: "string",
+              description: "Optional title for the list",
+            },
+            allowReorder: {
+              type: "boolean",
+              default: true,
+              description: "Allow drag-and-drop reordering",
+            },
+            allowCheckboxes: {
+              type: "boolean",
+              default: true,
+              description: "Show checkboxes for items",
+            },
+            compact: {
+              type: "boolean",
+              default: false,
+              description: "Use compact layout mode",
+            },
+            showImages: {
+              type: "boolean",
+              default: true,
+              description: "Display item images if available",
+            },
+          },
+          required: ["items"],
+        },
+        _meta: {
+          ui: {
+            resourceUri: "list://display",
             visibility: ["model", "app"],
           },
         },
@@ -535,6 +687,69 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  if (name === "display_tree") {
+    const input = TreeToolInputSchema.parse(args);
+
+    // Count total nodes recursively
+    const countNodes = (nodes: any[]): number => {
+      return nodes.reduce(
+        (count, node) =>
+          count + 1 + (node.children ? countNodes(node.children) : 0),
+        0,
+      );
+    };
+
+    const totalNodes = countNodes(input.nodes);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Displaying tree view with ${totalNodes} total nodes.${input.title ? ` Title: ${input.title}` : ""}`,
+        },
+      ],
+      _meta: {
+        ui: {
+          data: input,
+        },
+      },
+    };
+  }
+
+  if (name === "display_list") {
+    const input = ListToolInputSchema.parse(args);
+
+    // Convert image file paths to data URIs if present
+    const processedItems = input.items.map((item) => {
+      if (item.image) {
+        return {
+          ...item,
+          image: fileToDataUri(item.image),
+        };
+      }
+      return item;
+    });
+
+    const processedInput = {
+      ...input,
+      items: processedItems,
+    };
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Displaying list with ${input.items.length} items.${input.title ? ` Title: ${input.title}` : ""}`,
+        },
+      ],
+      _meta: {
+        ui: {
+          data: processedInput,
+        },
+      },
+    };
+  }
+
   throw new Error(`Unknown tool: ${name}`);
 });
 
@@ -562,6 +777,20 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         name: "Master-Detail View",
         description:
           "HTML resource for rendering master-detail layouts with tables, images, and text",
+        mimeType: "text/html",
+      },
+      {
+        uri: "tree://display",
+        name: "Interactive Tree View",
+        description:
+          "HTML resource for rendering hierarchical tree structures with expand/collapse and export",
+        mimeType: "text/html",
+      },
+      {
+        uri: "list://display",
+        name: "Interactive List Display",
+        description:
+          "HTML resource for rendering interactive lists with drag-and-drop reordering, checkboxes, and export",
         mimeType: "text/html",
       },
     ],
@@ -619,6 +848,48 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   if (uri === "master-detail://display") {
     try {
       const htmlPath = join(__dirname, "mcp-master-detail.html");
+      const htmlContent = readFileSync(htmlPath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "text/html",
+            text: htmlContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to read HTML resource. Make sure to run 'npm run build' first. Error: ${error}`,
+      );
+    }
+  }
+
+  if (uri === "tree://display") {
+    try {
+      const htmlPath = join(__dirname, "mcp-tree.html");
+      const htmlContent = readFileSync(htmlPath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "text/html",
+            text: htmlContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to read HTML resource. Make sure to run 'npm run build' first. Error: ${error}`,
+      );
+    }
+  }
+
+  if (uri === "list://display") {
+    try {
+      const htmlPath = join(__dirname, "mcp-list.html");
       const htmlContent = readFileSync(htmlPath, "utf-8");
 
       return {

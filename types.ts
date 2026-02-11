@@ -108,7 +108,10 @@ export const MasterItemSchema = z.object({
   label: z.string().describe("Display label for the item"),
   description: z.string().optional().describe("Optional description"),
   icon: z.string().optional().describe("Optional icon or emoji"),
-  metadata: z.record(z.string(), z.any()).optional().describe("Additional metadata"),
+  metadata: z
+    .record(z.string(), z.any())
+    .optional()
+    .describe("Additional metadata"),
 });
 
 export type MasterItem = z.infer<typeof MasterItemSchema>;
@@ -117,16 +120,34 @@ export type MasterItem = z.infer<typeof MasterItemSchema>;
  * Input schema for the display_master_detail tool
  */
 export const MasterDetailToolInputSchema = z.object({
-  title: z.string().optional().describe("Optional title for the master-detail view"),
-  masterItems: z.array(MasterItemSchema).describe("Array of items to display in master list"),
-  detailContents: z.record(z.string(), DetailContentSchema).describe(
-    "Map of item IDs to their detail content. Keys should match masterItems IDs."
-  ),
-  defaultSelectedId: z.string().optional().describe("ID of item to select by default"),
-  masterWidth: z.number().optional().default(300).describe("Width of master panel in pixels"),
-  orientation: z.enum(["horizontal", "vertical"]).optional().default("horizontal").describe(
-    "Layout orientation: horizontal (side-by-side) or vertical (stacked)"
-  ),
+  title: z
+    .string()
+    .optional()
+    .describe("Optional title for the master-detail view"),
+  masterItems: z
+    .array(MasterItemSchema)
+    .describe("Array of items to display in master list"),
+  detailContents: z
+    .record(z.string(), DetailContentSchema)
+    .describe(
+      "Map of item IDs to their detail content. Keys should match masterItems IDs.",
+    ),
+  defaultSelectedId: z
+    .string()
+    .optional()
+    .describe("ID of item to select by default"),
+  masterWidth: z
+    .number()
+    .optional()
+    .default(300)
+    .describe("Width of master panel in pixels"),
+  orientation: z
+    .enum(["horizontal", "vertical"])
+    .optional()
+    .default("horizontal")
+    .describe(
+      "Layout orientation: horizontal (side-by-side) or vertical (stacked)",
+    ),
 });
 
 export type MasterDetailToolInput = z.infer<typeof MasterDetailToolInputSchema>;
@@ -137,4 +158,131 @@ export type MasterDetailToolInput = z.infer<typeof MasterDetailToolInputSchema>;
 export interface MasterDetailState {
   selectedItemId?: string;
   selectedItem?: MasterItem;
+}
+
+/**
+ * Tree node schema for hierarchical data
+ */
+export const TreeNodeSchema: z.ZodType<any> = z.lazy(() =>
+  z.object({
+    id: z.string().describe("Unique identifier for the node"),
+    label: z.string().describe("Display label for the node"),
+    children: z
+      .array(TreeNodeSchema)
+      .optional()
+      .describe("Optional child nodes for hierarchical structure"),
+    metadata: z
+      .record(z.string(), z.any())
+      .optional()
+      .describe("Optional metadata associated with the node"),
+    icon: z.string().optional().describe("Optional icon/emoji for the node"),
+    expanded: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("Whether the node should be initially expanded"),
+  }),
+);
+
+export type TreeNode = {
+  id: string;
+  label: string;
+  children?: TreeNode[];
+  metadata?: Record<string, any>;
+  icon?: string;
+  expanded?: boolean;
+};
+
+/**
+ * Input schema for the display_tree tool
+ */
+export const TreeToolInputSchema = z.object({
+  nodes: z.array(TreeNodeSchema).describe("Array of root tree nodes"),
+  title: z.string().optional().describe("Optional title for the tree view"),
+  expandAll: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe("Expand all nodes initially"),
+  showMetadata: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe("Show metadata in tree nodes"),
+});
+
+export type TreeToolInput = z.infer<typeof TreeToolInputSchema>;
+
+/**
+ * Tree state that gets sent back to the agent via updateModelContext
+ */
+export interface TreeState {
+  expandedNodeIds?: string[];
+  selectedNodeId?: string;
+}
+
+/**
+ * List item schema for individual list items
+ */
+export const ListItemSchema = z.object({
+  id: z.string().describe("Unique identifier for the list item"),
+  content: z.string().describe("Text content of the list item"),
+  checked: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe("Whether the item is checked"),
+  image: z
+    .string()
+    .optional()
+    .describe("Optional image URL or data URI for the item"),
+  metadata: z
+    .record(z.string(), z.any())
+    .optional()
+    .describe("Optional metadata for the item"),
+  subtext: z
+    .string()
+    .optional()
+    .describe("Optional secondary text/description"),
+});
+
+export type ListItem = z.infer<typeof ListItemSchema>;
+
+/**
+ * Input schema for the display_list tool
+ */
+export const ListToolInputSchema = z.object({
+  items: z.array(ListItemSchema).describe("Array of list items to display"),
+  title: z.string().optional().describe("Optional title for the list"),
+  allowReorder: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe("Allow drag-and-drop reordering"),
+  allowCheckboxes: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe("Show checkboxes for items"),
+  compact: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe("Use compact layout mode"),
+  showImages: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe("Display item images if available"),
+});
+
+export type ListToolInput = z.infer<typeof ListToolInputSchema>;
+
+/**
+ * List state that gets sent back to the agent via updateModelContext
+ */
+export interface ListState {
+  itemOrder?: string[];
+  checkedItemIds?: string[];
+  selectedItemId?: string | null;
 }
