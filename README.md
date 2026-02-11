@@ -62,6 +62,10 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 
 *Interactive list with drag-and-drop reordering, checkboxes, and image thumbnails*
 
+![Tree Example](doc/tree-example.png)
+
+*Interactive tree view with expand/collapse, node selection, and export options*
+
 ## Installation
 
 ### npmjs (Recommended)
@@ -111,92 +115,6 @@ npm run serve
 ```
 
 
-### Tool: `display_tree`
-
-Displays an interactive tree view for hierarchical data structures. Perfect for visualizing file systems, organizational charts, nested categories, JSON/XML structures, or any hierarchical relationships.
-
-**Input:**
-
-```json
-{
-  "nodes": [
-    {
-      "id": "root",
-      "label": "My Project",
-      "icon": "📁",
-      "expanded": true,
-      "children": [
-        {
-          "id": "src",
-          "label": "src",
-          "icon": "📂",
-          "expanded": true,
-          "metadata": {
-            "type": "directory",
-            "items": 5
-          },
-          "children": [
-            {
-              "id": "app.ts",
-              "label": "app.ts",
-              "icon": "📄",
-              "metadata": {
-                "type": "file",
-                "size": "2.5 KB"
-              }
-            },
-            {
-              "id": "utils.ts",
-              "label": "utils.ts",
-              "icon": "📄",
-              "metadata": {
-                "type": "file",
-                "size": "1.8 KB"
-              }
-            }
-          ]
-        },
-        {
-          "id": "package.json",
-          "label": "package.json",
-          "icon": "📦",
-          "metadata": {
-            "type": "config",
-            "size": "1.2 KB"
-          }
-        }
-      ]
-    }
-  ],
-  "title": "Project Structure",
-  "expandAll": false,
-  "showMetadata": true
-}
-```
-
-**Node Properties:**
-
-- `id` (required): Unique identifier for the node
-- `label` (required): Display label for the node
-- `children` (optional): Array of child nodes for hierarchical structure
-- `metadata` (optional): Key-value pairs to display alongside the node
-- `icon` (optional): Emoji or icon character for the node
-- `expanded` (optional): Whether the node should be initially expanded (default: `false`)
-
-**Optional Parameters:**
-
-- `title`: Display title above the tree view
-- `expandAll`: Expand all nodes initially (default: `false`)
-- `showMetadata`: Show metadata in tree nodes (default: `true`)
-
-**Export Features:**
-
-- **Copy to Clipboard**: Copies tree as formatted text with tree structure characters (├──, └──, etc.)
-- **Export as HTML**: Downloads standalone HTML file with styled tree visualization
-- **Export as Image**: Downloads tree view as PNG image (browser-dependent)
-
-## Example: Using in VS Code with MCP
-
 ### 1. Configure MCP Server
 
 **For VS Code:** This workspace includes MCP configuration in `.vscode/settings.json`.
@@ -219,51 +137,6 @@ To add globally, update your VS Code settings:
 
 **For Claude Desktop:** See `claude_desktop_config.json` for example configuration.
 
-**For detailed setup:** See [MCP_SETUP.md](./MCP_SETUP.md)
-
-### 2. Example Agent Interaction
-
-**User:** "Show me a table of the top 10 GitHub repositories by stars"
-
-**Agent:**
-```typescript
-// Agent calls display_table tool
-{
-  "columns": [
-    { "key": "name", "label": "Repository", "type": "string" },
-    { "key": "stars", "label": "Stars", "type": "number" },
-    { "key": "language", "label": "Language", "type": "string" },
-    { "key": "updated", "label": "Last Updated", "type": "date" }
-  ],
-  "rows": [
-    { "name": "freeCodeCamp/freeCodeCamp", "stars": 385000, "language": "JavaScript", "updated": "2024-02-01" },
-    { "name": "996icu/996.ICU", "stars": 268000, "language": "Markdown", "updated": "2023-12-15" },
-    // ... more rows
-  ],
-  "title": "Top GitHub Repositories by Stars"
-}
-```
-
-The agent sees an interactive table where the user can:
-- Sort by any column (click header)
-- Filter repositories by name/language
-- Select specific repos
-- Change page size
-
-When the user selects rows or applies filters, the agent receives updates via `updateModelContext`:
-
-```json
-{
-  "type": "table_state",
-  "state": {
-    "sortBy": [{ "columnKey": "stars", "direction": "desc" }],
-    "filters": { "language": "JavaScript" },
-    "selectedRowIds": ["0", "2", "5"],
-    "visibleColumns": ["name", "stars", "language"]
-  },
-  "summary": "3 rows selected, 1 filters active, 1 columns sorted"
-}
-```
 
 ## License
 

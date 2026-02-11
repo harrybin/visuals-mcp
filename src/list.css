@@ -63,6 +63,8 @@
   padding: 6px;
   display: grid;
   gap: 3px;
+  height: auto;
+  overflow-y: auto;
 }
 
 .list-container.compact {

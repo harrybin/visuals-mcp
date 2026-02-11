@@ -42,6 +42,7 @@ export function TableView({ tableData, onStateChange }: TableViewProps) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [filterInputs, setFilterInputs] = useState<Record<string, string>>({});
   const [toast, setToast] = useState<string | null>(null);
+  const [dynamicHeight, setDynamicHeight] = useState<string>("auto");
 
   const showToast = (message: string) => {
     setToast(message);
@@ -81,6 +82,26 @@ export function TableView({ tableData, onStateChange }: TableViewProps) {
     const summary = `${selectedIds.length} rows selected, ${columnFilters.length} filters active, ${sorting.length} columns sorted`;
     onStateChange(state, summary);
   }, [sorting, columnFilters, rowSelection, columnVisibility, onStateChange]);
+
+  // Calculate dynamic height based on visible rows
+  useEffect(() => {
+    const calculateHeight = () => {
+      const visibleRows = tableData.rows.length;
+      // Approximate: 36px per row (header + data rows)
+      const headerHeight = 40;
+      const controlsHeight = 50;
+      const rowHeight = Math.max(visibleRows * 36, 100);
+      const totalHeight = headerHeight + controlsHeight + rowHeight;
+
+      // Limit to 80% of viewport height to leave room for chat
+      const maxHeight = Math.min(totalHeight, window.innerHeight * 0.8);
+      setDynamicHeight(`${maxHeight}px`);
+    };
+
+    calculateHeight();
+    window.addEventListener("resize", calculateHeight);
+    return () => window.removeEventListener("resize", calculateHeight);
+  }, [tableData.rows.length]);
 
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const cols: ColumnDef<any>[] = [];
@@ -257,7 +278,7 @@ export function TableView({ tableData, onStateChange }: TableViewProps) {
         </div>
       </div>
 
-      <div className="table-wrapper">
+      <div className="table-wrapper" style={{ height: dynamicHeight }}>
         <table>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
