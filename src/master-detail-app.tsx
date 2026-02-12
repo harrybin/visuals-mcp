@@ -262,12 +262,6 @@ function MasterDetailApp() {
 
   return (
     <div className={`master-detail-container ${orientation}`}>
-      {data.title && (
-        <div className="master-detail-header">
-          <h1>{data.title}</h1>
-        </div>
-      )}
-
       <div
         className="master-panel"
         style={
@@ -296,6 +290,16 @@ function MasterDetailApp() {
       </div>
 
       <div className="detail-panel">
+        {data.title && (
+          <div
+            className="detail-header"
+            style={{ textAlign: "center", marginBottom: "1rem" }}
+          >
+            <h1 style={{ fontSize: "1.25rem", margin: "0.5rem 0" }}>
+              {data.title}
+            </h1>
+          </div>
+        )}
         {selectedItem && (
           <div className="detail-header">
             <h2>{selectedItem.label}</h2>
