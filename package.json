@@ -1,7 +1,7 @@
 {
     "name": "@harrybin/visuals-mcp",
-    "version": "1.4.0",
-    "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, tree views for hierarchical data, and customizable lists",
+    "version": "1.5.0",
+    "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, master-detail views, tree views for hierarchical data, and customizable lists",
     "type": "module",
     "main": "dist/server.js",
     "bin": {
@@ -9,9 +9,10 @@
     },
     "scripts": {
         "build": "npm run build:ui && npm run build:server",
-        "build:ui": "npm run build:table && npm run build:image && npm run build:tree && npm run build:list",
+        "build:ui": "npm run build:table && npm run build:image && npm run build:master-detail && npm run build:tree && npm run build:list",
         "build:table": "vite build --config vite.config.table.ts",
         "build:image": "vite build --config vite.config.image.ts",
+        "build:master-detail": "vite build --config vite.config.master-detail.ts",
         "build:tree": "vite build --config vite.config.tree.ts",
         "build:list": "vite build --config vite.config.list.ts",
         "build:server": "tsc -p tsconfig.server.json",

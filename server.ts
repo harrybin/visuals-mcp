@@ -15,6 +15,7 @@ import {
   TableToolInputSchema,
   QueryTableDataInputSchema,
   ImageToolInputSchema,
+  MasterDetailToolInputSchema,
   TreeToolInputSchema,
   ListToolInputSchema,
 } from "./types.js";
@@ -251,6 +252,141 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         _meta: {
           ui: {
             resourceUri: "image://preview",
+            visibility: ["model", "app"],
+          },
+        },
+      },
+      {
+        name: "display_master_detail",
+        description:
+          "Display a master-detail view with a list of items on the left/top and details on the right/bottom. " +
+          "The detail panel can show tables, images, lists, or custom text/HTML content. Perfect for browsing collections, " +
+          "comparing items, or navigating hierarchical data.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              description: "Optional title for the master-detail view",
+            },
+            masterItems: {
+              type: "array",
+              description: "Array of items to display in the master list",
+              items: {
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
+                    description: "Unique identifier for the item",
+                  },
+                  label: {
+                    type: "string",
+                    description: "Display label for the item",
+                  },
+                  description: {
+                    type: "string",
+                    description: "Optional description shown below the label",
+                  },
+                  icon: {
+                    type: "string",
+                    description: "Optional icon or emoji to display",
+                  },
+                  metadata: {
+                    type: "object",
+                    description: "Additional metadata for the item",
+                  },
+                },
+                required: ["id", "label"],
+              },
+            },
+            detailContents: {
+              type: "object",
+              description:
+                "Map of item IDs to their detail content. Each key should match a masterItems ID.",
+              additionalProperties: {
+                oneOf: [
+                  {
+                    type: "object",
+                    properties: {
+                      type: { type: "string", enum: ["table"] },
+                      data: {
+                        type: "object",
+                        description:
+                          "Table data following display_table schema",
+                      },
+                    },
+                    required: ["type", "data"],
+                  },
+                  {
+                    type: "object",
+                    properties: {
+                      type: { type: "string", enum: ["image"] },
+                      data: {
+                        type: "object",
+                        description:
+                          "Image data following display_image schema",
+                      },
+                    },
+                    required: ["type", "data"],
+                  },
+                  {
+                    type: "object",
+                    properties: {
+                      type: { type: "string", enum: ["list"] },
+                      data: {
+                        type: "object",
+                        description: "List data following display_list schema",
+                      },
+                    },
+                    required: ["type", "data"],
+                  },
+                  {
+                    type: "object",
+                    properties: {
+                      type: { type: "string", enum: ["text"] },
+                      data: {
+                        type: "object",
+                        properties: {
+                          content: {
+                            type: "string",
+                            description: "Text or HTML content to display",
+                          },
+                          isHtml: {
+                            type: "boolean",
+                            description: "Whether content is HTML",
+                            default: false,
+                          },
+                        },
+                        required: ["content"],
+                      },
+                    },
+                    required: ["type", "data"],
+                  },
+                ],
+              },
+            },
+            defaultSelectedId: {
+              type: "string",
+              description: "ID of item to select by default",
+            },
+            masterWidth: {
+              type: "number",
+              description: "Width of master panel in pixels (default: 300)",
+              default: 300,
+            },
+            orientation: {
+              type: "string",
+              enum: ["horizontal", "vertical"],
+              description:
+                "Layout orientation: horizontal (side-by-side) or vertical (stacked)",
+              default: "horizontal",
+            },
+          },
+          required: ["masterItems", "detailContents"],
+        },
+        _meta: {
+          ui: {
+            resourceUri: "master-detail://display",
             visibility: ["model", "app"],
           },
         },
@@ -523,6 +659,45 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  if (name === "display_master_detail") {
+    const input = MasterDetailToolInputSchema.parse(args);
+
+    // Process image sources in detail contents
+    const processedDetailContents: Record<string, any> = {};
+    for (const [itemId, content] of Object.entries(input.detailContents)) {
+      if (content.type === "image") {
+        processedDetailContents[itemId] = {
+          ...content,
+          data: {
+            ...content.data,
+            src: fileToDataUri(content.data.src),
+          },
+        };
+      } else {
+        processedDetailContents[itemId] = content;
+      }
+    }
+
+    const processedInput = {
+      ...input,
+      detailContents: processedDetailContents,
+    };
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Displaying master-detail view with ${input.masterItems.length} items.${input.title ? ` Title: ${input.title}` : ""}`,
+        },
+      ],
+      _meta: {
+        ui: {
+          data: processedInput,
+        },
+      },
+    };
+  }
+
   if (name === "display_tree") {
     const input = TreeToolInputSchema.parse(args);
 
@@ -609,6 +784,13 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         mimeType: "text/html",
       },
       {
+        uri: "master-detail://display",
+        name: "Master-Detail View",
+        description:
+          "HTML resource for rendering master-detail layouts with tables, images, and text",
+        mimeType: "text/html",
+      },
+      {
         uri: "tree://display",
         name: "Interactive Tree View",
         description:
@@ -656,6 +838,27 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   if (uri === "image://preview") {
     try {
       const htmlPath = join(__dirname, "mcp-image.html");
+      const htmlContent = readFileSync(htmlPath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "text/html",
+            text: htmlContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to read HTML resource. Make sure to run 'npm run build' first. Error: ${error}`,
+      );
+    }
+  }
+
+  if (uri === "master-detail://display") {
+    try {
+      const htmlPath = join(__dirname, "mcp-master-detail.html");
       const htmlContent = readFileSync(htmlPath, "utf-8");
 
       return {

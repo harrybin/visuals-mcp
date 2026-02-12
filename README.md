@@ -1,6 +1,6 @@
 # MCP Visuals Server
 
-An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
+An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **master-detail views** for browsing collections, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
 
 ## Features
 
@@ -25,6 +25,16 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Flexible Sources**: Support URLs and data URIs
 - **Local File Support**: Automatically converts local file paths to data URIs
 - **Theme Integration**: Respects VS Code theme colors and fonts
+
+### Master-Detail View
+
+- **Flexible Layout**: Display a list of items with detailed content panel
+- **Multiple Content Types**: Detail panel supports tables, images, or custom text/HTML
+- **Reusable Components**: Leverages existing table and image visualizations
+- **Configurable Layout**: Choose horizontal (side-by-side) or vertical (stacked) orientation
+- **State Management**: Selection state automatically sent back to LLM
+- **Rich Master List**: Display items with icons, labels, and descriptions
+- **Theme Integration**: Consistent theming across all components
 
 ### Tree View
 
@@ -114,6 +124,229 @@ npm run build
 npm run serve
 ```
 
+## Project Structure
+
+```
+visuals-mcp/
+├── server.ts                      # MCP server implementation
+├── types.ts                       # TypeScript type definitions
+├── src/
+│   ├── table-app.tsx             # React app with TanStack Table
+│   ├── table-app.css             # Table styling
+│   ├── image-app.tsx             # React app for image previews
+│   ├── image.css                 # Image preview styling
+│   ├── master-detail-app.tsx     # React app for master-detail views
+│   └── master-detail.css         # Master-detail styling
+├── mcp-table.html                # HTML entry point for tables
+├── mcp-image.html                # HTML entry point for images
+├── mcp-master-detail.html        # HTML entry point for master-detail
+├── vite.config.table.ts          # Vite build config for tables
+├── vite.config.image.ts          # Vite build config for images
+├── vite.config.master-detail.ts  # Vite build config for master-detail
+├── tsconfig.json                 # TypeScript configuration
+└── package.json
+```
+
+## Usage
+
+### Tool: `display_table`
+
+Displays an interactive table with the provided column definitions and row data.
+
+**Input:**
+
+```json
+{
+  "columns": [
+    {
+      "key": "id",
+      "label": "ID",
+      "type": "number",
+      "sortable": true,
+      "filterable": true,
+      "width": 80
+    },
+    {
+      "key": "name",
+      "label": "Name",
+      "type": "string",
+      "sortable": true,
+      "filterable": true
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "type": "string"
+    },
+    {
+      "key": "active",
+      "label": "Active",
+      "type": "boolean"
+    },
+    {
+      "key": "created",
+      "label": "Created",
+      "type": "date"
+    }
+  ],
+  "rows": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "email": "alice@example.com",
+      "active": true,
+      "created": "2024-01-15"
+    },
+    {
+      "id": 2,
+      "name": "Bob Smith",
+      "email": "bob@example.com",
+      "active": false,
+      "created": "2024-02-20"
+    }
+  ],
+  "title": "User Management",
+  "allowRowSelection": true,
+  "allowColumnVisibility": true,
+  "pageSize": 10
+}
+```
+
+**Column Definition:**
+
+- `key` (required): Unique identifier that maps to data property
+- `label` (required): Display name in header
+- `type`: `"string"` | `"number"` | `"date"` | `"boolean"` (default: `"string"`)
+- `sortable`: Enable sorting (default: `true`)
+- `filterable`: Enable filtering (default: `true`)
+- `width`: Column width in pixels (optional)
+
+**Optional Parameters:**
+
+- `title`: Display title above the table
+- `allowRowSelection`: Enable row selection checkboxes (default: `true`)
+- `allowColumnVisibility`: Enable column visibility toggle (default: `true`)
+- `pageSize`: Initial rows per page (default: `10`)
+
+### Tool: `query_table_data`
+
+UI-only tool for server-side data operations (hidden from the model). The UI can call this to request filtered/sorted data from the server for large datasets.
+
+**Input:**
+
+```json
+{
+  "sortBy": [
+    {
+      "columnKey": "name",
+      "direction": "asc"
+    }
+  ],
+  "filters": {
+    "email": "example.com"
+  },
+  "page": 0,
+  "pageSize": 20
+}
+```
+
+### Tool: `display_image`
+
+Displays an image preview card with optional metadata.
+
+**Input:**
+
+```json
+{
+  "src": "https://example.com/preview.png",
+  "title": "Preview",
+  "alt": "Screenshot preview",
+  "caption": "Latest build output",
+  "filename": "preview.png",
+  "sizeBytes": 154233,
+  "width": 1200,
+  "height": 800
+}
+```
+
+### Tool: `display_master_detail`
+
+Displays a master-detail view with a list of items and detailed content panel. The detail panel can show tables, images, or custom text/HTML content.
+
+**Input:**
+
+```json
+{
+  "title": "Product Catalog",
+  "masterItems": [
+    {
+      "id": "product1",
+      "label": "Smart Watch Pro",
+      "description": "Advanced fitness tracking",
+      "icon": "⌚"
+    },
+    {
+      "id": "product2", 
+      "label": "Wireless Earbuds",
+      "description": "Premium sound quality",
+      "icon": "🎧"
+    }
+  ],
+  "detailContents": {
+    "product1": {
+      "type": "table",
+      "data": {
+        "title": "Specifications",
+        "columns": [
+          { "key": "feature", "label": "Feature", "type": "string" },
+          { "key": "value", "label": "Value", "type": "string" }
+        ],
+        "rows": [
+          { "feature": "Display", "value": "1.4\" AMOLED" },
+          { "feature": "Battery Life", "value": "7 days" }
+        ]
+      }
+    },
+    "product2": {
+      "type": "image",
+      "data": {
+        "src": "https://example.com/earbuds.png",
+        "title": "Wireless Earbuds",
+        "caption": "Premium design with active noise cancellation"
+      }
+    }
+  },
+  "defaultSelectedId": "product1",
+  "masterWidth": 300,
+  "orientation": "horizontal"
+}
+```
+
+**Parameters:**
+
+- `masterItems` (required): Array of items to display in the master list
+  - `id` (required): Unique identifier
+  - `label` (required): Display name
+  - `description` (optional): Subtitle text
+  - `icon` (optional): Icon or emoji
+  - `metadata` (optional): Additional data
+- `detailContents` (required): Map of item IDs to detail content
+  - `type`: `"table"` | `"image"` | `"text"`
+  - `data`: Content following the respective tool schema
+- `title` (optional): View title
+- `defaultSelectedId` (optional): Initially selected item
+- `masterWidth` (optional): Master panel width in pixels (default: 300)
+- `orientation` (optional): `"horizontal"` | `"vertical"` (default: "horizontal")
+
+**Use Cases:**
+
+- Product catalogs with detailed specifications
+- File browsers with preview panels
+- Document libraries with content viewer
+- Configuration panels with settings details
+- Any collection requiring item-by-item exploration
+
+See [doc/master-detail-example.json](./doc/master-detail-example.json) for a complete example.
 
 ### 1. Configure MCP Server
 
