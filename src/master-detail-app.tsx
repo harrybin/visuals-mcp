@@ -191,7 +191,7 @@ function MasterDetailApp() {
         console.log("Received tool input:", params);
         const inputData = params.arguments as MasterDetailToolInput;
         setData(inputData);
-        
+
         // Set initial selection
         if (inputData.defaultSelectedId) {
           setSelectedId(inputData.defaultSelectedId);
@@ -224,7 +224,9 @@ function MasterDetailApp() {
   useEffect(() => {
     if (!app || !data || !selectedId) return;
 
-    const selectedItem = data.masterItems.find((item) => item.id === selectedId);
+    const selectedItem = data.masterItems.find(
+      (item) => item.id === selectedId,
+    );
     if (!selectedItem) return;
 
     const state: MasterDetailState = {
@@ -281,9 +283,7 @@ function MasterDetailApp() {
               className={`master-item ${selectedId === item.id ? "selected" : ""}`}
               onClick={() => handleItemClick(item.id)}
             >
-              {item.icon && (
-                <div className="master-item-icon">{item.icon}</div>
-              )}
+              {item.icon && <div className="master-item-icon">{item.icon}</div>}
               <div className="master-item-content">
                 <p className="master-item-label">{item.label}</p>
                 {item.description && (
@@ -300,7 +300,9 @@ function MasterDetailApp() {
           <div className="detail-header">
             <h2>{selectedItem.label}</h2>
             {selectedItem.description && (
-              <p className="detail-header-subtitle">{selectedItem.description}</p>
+              <p className="detail-header-subtitle">
+                {selectedItem.description}
+              </p>
             )}
           </div>
         )}

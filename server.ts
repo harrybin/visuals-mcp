@@ -335,8 +335,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                       type: { type: "string", enum: ["list"] },
                       data: {
                         type: "object",
-                        description:
-                          "List data following display_list schema",
+                        description: "List data following display_list schema",
                       },
                     },
                     required: ["type", "data"],
