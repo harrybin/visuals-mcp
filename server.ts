@@ -260,7 +260,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         name: "display_master_detail",
         description:
           "Display a master-detail view with a list of items on the left/top and details on the right/bottom. " +
-          "The detail panel can show tables, images, or custom content. Perfect for browsing collections, " +
+          "The detail panel can show tables, images, lists, or custom text/HTML content. Perfect for browsing collections, " +
           "comparing items, or navigating hierarchical data.",
         inputSchema: {
           type: "object",
@@ -325,6 +325,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         type: "object",
                         description:
                           "Image data following display_image schema",
+                      },
+                    },
+                    required: ["type", "data"],
+                  },
+                  {
+                    type: "object",
+                    properties: {
+                      type: { type: "string", enum: ["list"] },
+                      data: {
+                        type: "object",
+                        description:
+                          "List data following display_list schema",
                       },
                     },
                     required: ["type", "data"],

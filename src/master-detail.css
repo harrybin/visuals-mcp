@@ -3,7 +3,8 @@
 .master-detail-container {
   display: flex;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   overflow: hidden;
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   background-color: var(--color-background-primary, #1e1e1e);
@@ -162,6 +163,13 @@
 .detail-content .table-shell {
   margin: 0;
   height: calc(100% - 2rem);
+}
+
+/* List in detail */
+.detail-content .list-shell {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
 }
 
 /* Image in detail */

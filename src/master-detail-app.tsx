@@ -8,10 +8,12 @@ import type {
   MasterDetailState,
 } from "../types";
 import { TableView } from "./table";
+import { ListView } from "./list";
 import "./app.css";
 import "./master-detail.css";
 import "./table-app.css";
 import "./image.css";
+import "./list.css";
 
 type ThemeMode = "dark" | "light";
 
@@ -80,6 +82,14 @@ function DetailRenderer({ content, item }: DetailRendererProps) {
     return (
       <div className="detail-content">
         <TableView tableData={content.data} />
+      </div>
+    );
+  }
+
+  if (content.type === "list") {
+    return (
+      <div className="detail-content">
+        <ListView listData={content.data} />
       </div>
     );
   }
