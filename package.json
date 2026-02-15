@@ -19,7 +19,9 @@
         "serve": "node dist/server.js",
         "dev": "concurrently \"npm run watch:ui\" \"tsx watch server.ts\"",
         "watch:ui": "concurrently \"vite build --watch --config vite.config.table.ts\" \"vite build --watch --config vite.config.image.ts\" \"vite build --watch --config vite.config.tree.ts\" \"vite build --watch --config vite.config.list.ts\"",
-        "publish:npm": "npm publish --registry https://registry.npmjs.org --access public"
+        "publish:npm": "npm publish --registry https://registry.npmjs.org --access public",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
     },
     "keywords": [
         "mcp",
@@ -69,6 +71,17 @@
         "tsx": "^4.21.0",
         "typescript": "^5.7.2",
         "vite": "^7.3.1",
-        "vite-plugin-singlefile": "^2.0.4"
+        "vite-plugin-singlefile": "^2.0.4",
+        "storybook": "^10.2.8",
+        "@storybook/react-vite": "^10.2.8",
+        "@chromatic-com/storybook": "^5.0.1",
+        "@storybook/addon-vitest": "^10.2.8",
+        "@storybook/addon-a11y": "^10.2.8",
+        "@storybook/addon-docs": "^10.2.8",
+        "@storybook/addon-onboarding": "^10.2.8",
+        "vitest": "^4.0.18",
+        "playwright": "^1.58.2",
+        "@vitest/browser-playwright": "^4.0.18",
+        "@vitest/coverage-v8": "^4.0.18"
     }
 }

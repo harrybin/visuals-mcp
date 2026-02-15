@@ -153,6 +153,47 @@ To add globally, update your VS Code settings:
 **For Claude Desktop:** See `claude_desktop_config.json` for example configuration.
 
 
+## Storybook
+
+This project includes a comprehensive Storybook with interactive examples of all visual components.
+
+### View Online
+
+Visit the [live Storybook](https://harrybin.github.io/visuals-mcp/) to explore all components and their variations.
+
+### Run Locally
+
+```bash
+npm run storybook
+```
+
+This will start the Storybook development server at `http://localhost:6006`.
+
+### Build Storybook
+
+```bash
+npm run build-storybook
+```
+
+This builds a static version of Storybook to the `storybook-static` directory.
+
+### GitHub Pages Deployment
+
+Storybook is automatically built and deployed to GitHub Pages when changes are pushed to the `main` branch. The workflow file is located at `.github/workflows/storybook.yml`.
+
+**Note**: To enable GitHub Pages for this repository:
+1. Go to repository Settings → Pages
+2. Under "Source", select "GitHub Actions"
+3. The workflow will run automatically on the next push to `main`
+
+### Available Stories
+
+- **Introduction**: Overview of all MCP visual components
+- **Table**: 7 stories showcasing different table configurations (default, small dataset, large dataset, etc.)
+- **Image**: 7 stories demonstrating image previews with various metadata
+- **Tree**: 7 stories showing hierarchical data visualization (file systems, org charts, menus, etc.)
+- **List**: 9 stories illustrating interactive lists with different features (todos, contacts, notifications, etc.)
+
 ## License
 
 MIT

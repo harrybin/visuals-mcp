@@ -11,3 +11,6 @@ dist/
 
 # Claude Desktop config (example only)
 # claude_desktop_config.json
+
+*storybook.log
+storybook-static
