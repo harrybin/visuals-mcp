@@ -7,6 +7,13 @@
     "bin": {
         "visuals-mcp": "dist/server.js"
     },
+    "mcp": {
+        "server": {
+            "command": "node",
+            "args": ["dist/server.js"],
+            "transport": "stdio"
+        }
+    },
     "scripts": {
         "build": "npm run build:ui && npm run build:server",
         "build:ui": "npm run build:table && npm run build:image && npm run build:master-detail && npm run build:tree && npm run build:list",
@@ -27,8 +34,18 @@
         "mcp",
         "mcp-server",
         "mcp-apps",
+        "model-context-protocol",
         "table",
-        "tanstack-table"
+        "tanstack-table",
+        "visualization",
+        "interactive-table",
+        "data-visualization",
+        "vscode",
+        "github-copilot",
+        "ai-tools",
+        "image-preview",
+        "tree-view",
+        "list-view"
     ],
     "author": "harrybin",
     "license": "MIT",
@@ -41,7 +58,7 @@
     },
     "homepage": "https://github.com/harrybin/visuals-mcp#readme",
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com",
+        "registry": "https://registry.npmjs.org",
         "access": "public"
     },
     "files": [
