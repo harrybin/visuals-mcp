@@ -1,5 +1,5 @@
-import type { Preview } from '@storybook/react-vite'
-import '../src/app.css';
+import type { Preview } from "@storybook/react-vite";
+import "../src/app.css";
 
 const preview: Preview = {
   parameters: {
@@ -14,19 +14,19 @@ const preview: Preview = {
       // 'todo' - show a11y violations in the test UI only
       // 'error' - fail CI on a11y violations
       // 'off' - skip a11y checks entirely
-      test: 'todo'
+      test: "todo",
     },
 
     backgrounds: {
-      default: 'light',
+      default: "light",
       values: [
         {
-          name: 'light',
-          value: '#ffffff',
+          name: "light",
+          value: "#ffffff",
         },
         {
-          name: 'dark',
-          value: '#1e1e1e',
+          name: "dark",
+          value: "#1e1e1e",
         },
       ],
     },
