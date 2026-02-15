@@ -1,6 +1,7 @@
 {
     "name": "@harrybin/visuals-mcp",
-    "version": "1.5.0",
+    "version": "1.5.1",
+    "mcpName": "io.github.harrybin/visuals-mcp",
     "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, master-detail views, tree views for hierarchical data, and customizable lists",
     "type": "module",
     "main": "dist/server.js",
@@ -10,7 +11,9 @@
     "mcp": {
         "server": {
             "command": "node",
-            "args": ["dist/server.js"],
+            "args": [
+                "dist/server.js"
+            ],
             "transport": "stdio"
         }
     },

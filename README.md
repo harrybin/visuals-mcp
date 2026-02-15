@@ -1,210 +1,153 @@
-# MCP Visuals Server
+# MCP Registry
 
-An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **master-detail views** for browsing collections, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
+The MCP registry provides MCP clients with a list of MCP servers, like an app store for MCP servers.
 
-## Features
+[**📤 Publish my MCP server**](docs/modelcontextprotocol-io/quickstart.mdx) | [**⚡️ Live API docs**](https://registry.modelcontextprotocol.io/docs) | [**👀 Ecosystem vision**](docs/design/ecosystem-vision.md) | 📖 **[Full documentation](./docs)**
 
-### Table Visualization
+## Development Status
 
-- **Interactive Table Display**: Full-featured data table with TanStack Table v8
-- **Sorting**: Click column headers to sort ascending/descending
-- **Filtering**: Per-column text filters with apply button
-- **Pagination**: Customizable page sizes (5, 10, 20, 50, 100 rows)
-- **Column Visibility**: Toggle which columns are displayed
-- **Row Selection**: Select individual rows or all rows
-- **Export**: Copy as CSV/TSV or export to PDF
-- **Agent Integration**: Table state (selections, filters, sorting) automatically sent back to the LLM via `updateModelContext`
-- **Theme Integration**: Respects VS Code theme colors and fonts
-- **Responsive**: Works on different screen sizes
-- **Generic Data Support**: Accepts any column structure and data types
+**2025-10-24 update**: The Registry API has entered an **API freeze (v0.1)** 🎉. For the next month or more, the API will remain stable with no breaking changes, allowing integrators to confidently implement support. This freeze applies to v0.1 while development continues on v0. We'll use this period to validate the API in real-world integrations and gather feedback to shape v1 for general availability. Thank you to everyone for your contributions and patience—your involvement has been key to getting us here!
 
-### Image Preview
+**2025-09-08 update**: The registry has launched in preview 🎉 ([announcement blog post](https://blog.modelcontextprotocol.io/posts/2025-09-08-mcp-registry-preview/)). While the system is now more stable, this is still a preview release and breaking changes or data resets may occur. A general availability (GA) release will follow later. We'd love your feedback in [GitHub discussions](https://github.com/modelcontextprotocol/registry/discussions/new?category=ideas) or in the [#registry-dev Discord](https://discord.com/channels/1358869848138059966/1369487942862504016) ([joining details here](https://modelcontextprotocol.io/community/communication)).
 
-- **Rich Image Cards**: Display images with title, caption, and metadata
-- **Metadata Display**: Show filename, dimensions, and file size
-- **Flexible Sources**: Support URLs and data URIs
-- **Local File Support**: Automatically converts local file paths to data URIs
-- **Theme Integration**: Respects VS Code theme colors and fonts
-
-### Master-Detail View
-
-- **Flexible Layout**: Display a list of items with detailed content panel
-- **Multiple Content Types**: Detail panel supports tables, images, or custom text/HTML
-- **Reusable Components**: Leverages existing table and image visualizations
-- **Configurable Layout**: Choose horizontal (side-by-side) or vertical (stacked) orientation
-- **State Management**: Selection state automatically sent back to LLM
-- **Rich Master List**: Display items with icons, labels, and descriptions
-- **Theme Integration**: Consistent theming across all components
-
-### Tree View
-
-- **Hierarchical Data Display**: Interactive tree structure for nested data
-- **Expand/Collapse**: Click to expand or collapse nodes
-- **Node Selection**: Select individual nodes to highlight them
-- **Metadata Support**: Display optional metadata for each node
-- **Icons**: Add custom icons/emojis to nodes
-- **Bulk Operations**: Expand all or collapse all nodes at once
-- **Export Options**: Copy tree to clipboard, export as HTML, or save as image (PNG)
-- **Agent Integration**: Tree state (expanded nodes, selection) sent back to the LLM
-- **Theme Integration**: Respects VS Code theme colors and fonts
-- **Use Cases**: File systems, org charts, nested categories, JSON/XML structures
-
-### List Visualization
-
-- **Interactive Lists**: Display any type of list with rich formatting
-- **Drag-and-Drop Reordering**: Easily reorder items by dragging
-- **Checkboxes**: Optional checkboxes for task lists and selections
-- **Image Thumbnails**: Show images alongside list items
-- **Compact Mode**: Toggle between comfortable and compact layouts
-- **Export Options**: Copy as plain text, CSV, or JSON
-- **Individual Item Copy**: Quick copy button for each item
-- **Subtext Support**: Secondary text/description for each item
-- **Metadata**: Attach custom metadata to items
-- **Theme Integration**: Respects VS Code theme colors and fonts
-
-## Screenshots
-
-![Table Example](doc/table-example.png)
-
-*Interactive table with sorting, filtering, pagination, and row selection*
-
-![Master-Detail Example](doc/master-detail-example.png)
-
-*Master-detail view for browsing collections with tables, images, or custom content*
-
-![List Example](doc/list-example.png)
-
-*Interactive list with drag-and-drop reordering, checkboxes, and image thumbnails*
-
-![Tree Example](doc/tree-example.png)
-
-*Interactive tree view with expand/collapse, node selection, and export options*
-
-## Installation
-
-### npmjs (Recommended)
-
-In **VSCode** github Copilot Chat 
-- click on the tools icon (Configure tools...) 
-- click on "Add MCP Server"
-- click on "Install from npm"
-- enter `@harrybin/visuals-mcp` 
-- press enter / click "Install"
-
-Using command line:
-
-```bash
-npm install -g @harrybin/visuals-mcp
-visuals-mcp
-```
-
-
-### GitHub Packages
-
-1. Authenticate npm with GitHub Packages:
-
-```bash
-npm config set @harrybin:registry https://npm.pkg.github.com
-npm config set //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
-```
-
-2. Install and run:
-
-```bash
-npm install -g @harrybin/visuals-mcp
-visuals-mcp
-```
-
-### Local Development
-
-```bash
-# Install dependencies
-npm install
-
-# Build the UI
-npm run build
-
-# Run the server
-npm run serve
-```
-
-
-
-### 1. Configure MCP Server
-
-**For VS Code:** This workspace includes MCP configuration in `.vscode/settings.json`.
-
-To add globally, update your VS Code settings:
-
-```json
-{
-  "github.copilot.chat.mcpServers": {
-    "visuals-mcp": {
-			"type": "stdio",
-			"command": "node",
-			"args": [
-				"dist/server.js"
-			]
-		}
-  }
-}
-```
-
-**For Claude Desktop:** See `claude_desktop_config.json` for example configuration.
-
-
-## Storybook
-
-This project includes a comprehensive Storybook with interactive examples of all visual components.
-
-### View Online
-
-Visit the [live Storybook](https://harrybin.github.io/visuals-mcp/) to explore all components and their variations.
-
-### Run Locally
-
-```bash
-npm run storybook
-```
-
-This will start the Storybook development server at `http://localhost:6006`.
-
-### Build Storybook
-
-```bash
-npm run build-storybook
-```
-
-This builds a static version of Storybook to the `storybook-static` directory.
-
-### GitHub Pages Deployment
-
-Storybook is automatically built and deployed to GitHub Pages when changes are pushed to the `main` branch. The workflow file is located at `.github/workflows/storybook.yml`.
-
-**Note**: To enable GitHub Pages for this repository:
-1. Go to repository Settings → Pages
-2. Under "Source", select "GitHub Actions"
-3. The workflow will run automatically on the next push to `main`
-
-### Available Stories
-
-- **Introduction**: Overview of all MCP visual components
-- **Table**: 7 stories showcasing different table configurations (default, small dataset, large dataset, etc.)
-- **Image**: 7 stories demonstrating image previews with various metadata
-- **Tree**: 7 stories showing hierarchical data visualization (file systems, org charts, menus, etc.)
-- **List**: 9 stories illustrating interactive lists with different features (todos, contacts, notifications, etc.)
-
-## License
-
-MIT
+Current key maintainers:
+- **Adam Jones** (Anthropic) [@domdomegg](https://github.com/domdomegg)  
+- **Tadas Antanavicius** (PulseMCP) [@tadasant](https://github.com/tadasant)
+- **Toby Padilla** (GitHub) [@toby](https://github.com/toby)
+- **Radoslav (Rado) Dimitrov** (Stacklok) [@rdimitrov](https://github.com/rdimitrov)
 
 ## Contributing
 
-Contributions welcome! Please open an issue or PR.
+We use multiple channels for collaboration - see [modelcontextprotocol.io/community/communication](https://modelcontextprotocol.io/community/communication).
 
-## Resources
+Often (but not always) ideas flow through this pipeline:
 
-- [MCP Apps Documentation](https://modelcontextprotocol.github.io/ext-apps/api/)
-- [MCP Apps Examples](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples)
-- [TanStack Table Docs](https://tanstack.com/table/latest)
-- [VS Code MCP Guide](https://code.visualstudio.com/docs/copilot/guides/mcp-developer-guide)
+- **[Discord](https://modelcontextprotocol.io/community/communication)** - Real-time community discussions
+- **[Discussions](https://github.com/modelcontextprotocol/registry/discussions)** - Propose and discuss product/technical requirements
+- **[Issues](https://github.com/modelcontextprotocol/registry/issues)** - Track well-scoped technical work  
+- **[Pull Requests](https://github.com/modelcontextprotocol/registry/pulls)** - Contribute work towards issues
+
+### Quick start:
+
+#### Pre-requisites
+
+- **Docker**
+- **Go 1.24.x**
+- **ko** - Container image builder for Go ([installation instructions](https://ko.build/install/))
+- **golangci-lint v2.4.0**
+
+#### Running the server
+
+```bash
+# Start full development environment
+make dev-compose
+```
+
+This starts the registry at [`localhost:8080`](http://localhost:8080) with PostgreSQL. The database uses ephemeral storage and is reset each time you restart the containers, ensuring a clean state for development and testing.
+
+**Note:** The registry uses [ko](https://ko.build) to build container images. The `make dev-compose` command automatically builds the registry image with ko and loads it into your local Docker daemon before starting the services.
+
+By default, the registry seeds from the production API with a filtered subset of servers (to keep startup fast). This ensures your local environment mirrors production behavior and all seed data passes validation. For offline development you can seed from a file without validation with `MCP_REGISTRY_SEED_FROM=data/seed.json MCP_REGISTRY_ENABLE_REGISTRY_VALIDATION=false make dev-compose`.
+
+The setup can be configured with environment variables in [docker-compose.yml](./docker-compose.yml) - see [.env.example](./.env.example) for a reference.
+
+<details>
+<summary>Alternative: Running a pre-built Docker image</summary>
+
+Pre-built Docker images are automatically published to GitHub Container Registry:
+
+```bash
+# Run latest stable release
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:latest
+
+# Run latest from main branch (continuous deployment)
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main
+
+# Run specific release version
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:v1.0.0
+
+# Run development build from main branch
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main-20250906-abc123d
+```
+
+**Available tags:** 
+- **Releases**: `latest`, `v1.0.0`, `v1.1.0`, etc.
+- **Continuous**: `main` (latest main branch build)
+- **Development**: `main-<date>-<sha>` (specific commit builds)
+
+</details>
+
+#### Publishing a server
+
+To publish a server, we've built a simple CLI. You can use it with:
+
+```bash
+# Build the latest CLI
+make publisher
+
+# Use it!
+./bin/mcp-publisher --help
+```
+
+See [the publisher guide](./docs/modelcontextprotocol-io/quickstart.mdx) for more details.
+
+#### Other commands
+
+```bash
+# Run lint, unit tests and integration tests
+make check
+```
+
+There are also a few more helpful commands for development. Run `make help` to learn more, or look in [Makefile](./Makefile).
+
+<!--
+For Claude and other AI tools: Always prefer make targets over custom commands where possible.
+-->
+
+## Architecture
+
+### Project Structure
+
+```
+├── cmd/                     # Application entry points
+│   └── publisher/           # Server publishing tool
+├── data/                    # Seed data
+├── deploy/                  # Deployment configuration (Pulumi)
+├── docs/                    # Documentation
+├── internal/                # Private application code
+│   ├── api/                 # HTTP handlers and routing
+│   ├── auth/                # Authentication (GitHub OAuth, JWT, namespace blocking)
+│   ├── config/              # Configuration management
+│   ├── database/            # Data persistence (PostgreSQL)
+│   ├── service/             # Business logic
+│   ├── telemetry/           # Metrics and monitoring
+│   └── validators/          # Input validation
+├── pkg/                     # Public packages
+│   ├── api/                 # API types and structures
+│   │   └── v0/              # Version 0 API types
+│   └── model/               # Data models for server.json
+├── scripts/                 # Development and testing scripts
+├── tests/                   # Integration tests
+└── tools/                   # CLI tools and utilities
+    └── validate-*.sh        # Schema validation tools
+```
+
+### Authentication
+
+Publishing supports multiple authentication methods:
+- **GitHub OAuth** - For publishing by logging into GitHub
+- **GitHub OIDC** - For publishing from GitHub Actions
+- **DNS verification** - For proving ownership of a domain and its subdomains
+- **HTTP verification** - For proving ownership of a domain
+
+The registry validates namespace ownership when publishing. E.g. to publish...:
+- `io.github.domdomegg/my-cool-mcp` you must login to GitHub as `domdomegg`, or be in a GitHub Action on domdomegg's repos
+- `me.adamjones/my-cool-mcp` you must prove ownership of `adamjones.me` via DNS or HTTP challenge
+
+## Community Projects
+
+Check out [community projects](docs/community-projects.md) to explore notable registry-related work created by the community.
+
+## More documentation
+
+See the [documentation](./docs) for more details if your question has not been answered here!
