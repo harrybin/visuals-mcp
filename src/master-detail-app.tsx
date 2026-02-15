@@ -322,6 +322,8 @@ function MasterDetailApp() {
   );
 }
 
+export default MasterDetailApp;
+
 // Mount the app
 const root = document.getElementById("root");
 if (root) {
