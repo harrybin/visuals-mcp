@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
         onDidChangeMcpServerDefinitions: didChangeEmitter.event,
 
         provideMcpServerDefinitions: async () => {
-          const serverPath = context.asAbsolutePath("dist/server.js");
+          const serverPath = context.asAbsolutePath("dist/server.bundle.mjs");
           outputChannel.appendLine(`Providing MCP server at: ${serverPath}`);
           return [
             new vscode.McpStdioServerDefinition("visuals-mcp", "node", [
