@@ -5,6 +5,7 @@ out/
 .DS_Store
 .env
 *.tsbuildinfo
+*.vsix
 
 # Keep .vscode/settings.json for MCP config
 !.vscode/

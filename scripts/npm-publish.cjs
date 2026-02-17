@@ -21,19 +21,31 @@ const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
 const originalName = pkg.name;
 
 try {
-  // Set scoped name and restore type:module for npm publish
+  // Set scoped name for npm publish
   pkg.name = "@harrybin/visuals-mcp";
-  pkg.type = "module";
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 4) + "\n");
 
-  console.log(`Publishing @harrybin/visuals-mcp to ${registryUrl}...`);
-  execSync(`npm publish --registry ${registryUrl} --access public`, {
-    stdio: "inherit",
-    cwd: path.join(__dirname, ".."),
-  });
+  console.log(`Publishing @harrybin/visuals-mcp@${pkg.version} to ${registryUrl}...`);
+  try {
+    execSync(`npm publish --registry ${registryUrl} --access public`, {
+      stdio: "pipe",
+      cwd: path.join(__dirname, ".."),
+    });
+    console.log("Published successfully.");
+  } catch (e) {
+    const output = [e.stderr, e.stdout, e.message].map(s => (s || "").toString()).join("\n");
+    // If this version is already published, skip gracefully
+    if (output.includes("previously published versions") || output.includes("Cannot publish over")) {
+      console.log(`Version ${pkg.version} already published to ${registryUrl} — skipping.`);
+    } else {
+      // Print the captured output so the user can see what went wrong
+      if (e.stderr) process.stderr.write(e.stderr);
+      if (e.stdout) process.stdout.write(e.stdout);
+      throw e;
+    }
+  }
 } finally {
-  // Always restore original name and remove type:module
+  // Always restore original unscoped name (required for vsce)
   pkg.name = originalName;
-  delete pkg.type;
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 4) + "\n");
 }
