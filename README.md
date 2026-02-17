@@ -1,7 +1,5 @@
 # MCP Visuals Server
 
-![MCP Visuals Logo](visuals-mcp-logo.png)
-
 An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **master-detail views** for browsing collections, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
 
 ### Quick Install
