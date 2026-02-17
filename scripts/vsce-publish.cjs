@@ -8,7 +8,9 @@ const path = require("path");
 // Load .env file
 const envPath = path.join(__dirname, "..", ".env");
 if (!fs.existsSync(envPath)) {
-  console.error("Error: .env file not found. Create one with MARKETPLACE_TOKEN=<your-pat>");
+  console.error(
+    "Error: .env file not found. Create one with MARKETPLACE_TOKEN=<your-pat>",
+  );
   process.exit(1);
 }
 
@@ -29,7 +31,9 @@ if (!token) {
   process.exit(1);
 }
 
-const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf-8"));
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf-8"),
+);
 console.log(`Publishing ${pkg.name}@${pkg.version} to VS Code Marketplace...`);
 
 try {
@@ -39,7 +43,9 @@ try {
   });
   console.log("Published successfully.");
 } catch (e) {
-  const output = [e.stderr, e.stdout, e.message].map(s => (s || "").toString()).join("\n");
+  const output = [e.stderr, e.stdout, e.message]
+    .map((s) => (s || "").toString())
+    .join("\n");
   if (output.includes("already exists") || output.includes("Version")) {
     console.log(`Version ${pkg.version} may already be published — skipping.`);
   } else {

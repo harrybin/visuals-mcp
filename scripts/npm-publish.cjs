@@ -25,7 +25,9 @@ try {
   pkg.name = "@harrybin/visuals-mcp";
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 4) + "\n");
 
-  console.log(`Publishing @harrybin/visuals-mcp@${pkg.version} to ${registryUrl}...`);
+  console.log(
+    `Publishing @harrybin/visuals-mcp@${pkg.version} to ${registryUrl}...`,
+  );
   try {
     execSync(`npm publish --registry ${registryUrl} --access public`, {
       stdio: "pipe",
@@ -33,10 +35,17 @@ try {
     });
     console.log("Published successfully.");
   } catch (e) {
-    const output = [e.stderr, e.stdout, e.message].map(s => (s || "").toString()).join("\n");
+    const output = [e.stderr, e.stdout, e.message]
+      .map((s) => (s || "").toString())
+      .join("\n");
     // If this version is already published, skip gracefully
-    if (output.includes("previously published versions") || output.includes("Cannot publish over")) {
-      console.log(`Version ${pkg.version} already published to ${registryUrl} — skipping.`);
+    if (
+      output.includes("previously published versions") ||
+      output.includes("Cannot publish over")
+    ) {
+      console.log(
+        `Version ${pkg.version} already published to ${registryUrl} — skipping.`,
+      );
     } else {
       // Print the captured output so the user can see what went wrong
       if (e.stderr) process.stderr.write(e.stderr);
