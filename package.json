@@ -59,7 +59,7 @@
         "publish:github": "node scripts/npm-publish.cjs https://npm.pkg.github.com",
         "publish:npm": "node scripts/npm-publish.cjs https://registry.npmjs.org",
         "publish:vscode": "node scripts/vsce-publish.cjs",
-        "publish:mcp": "npm run sync-server-version && .\\mcp-publisher.exe publish",
+        "publish:mcp": "node scripts/mcp-publish.cjs",
         "publish:all": "npm run build && npm run publish:github && npm run publish:npm && npm run publish:vscode && npm run publish:mcp",
         "package:vscode": "vsce package",
         "storybook": "storybook dev -p 6006",
