@@ -7,6 +7,7 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 ### Quick Install
 
 [![Install with VS Code](https://img.shields.io/badge/install-VS%20Code-007ACC?style=for-the-badge&logo=visualstudiocode)](vscode:mcp/install?%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40harrybin%2Fvisuals-mcp%22%5D%7D)
+ °°° [![Install with VS Code Insiders](https://img.shields.io/badge/install-VS%20Code%20Insiders-24bfa5?style=for-the-badge&logo=visualstudiocode)](vscode-insiders:mcp/install?%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40harrybin%2Fvisuals-mcp%22%5D%7D)
 
 ## Features
 
@@ -88,7 +89,18 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 
 ## Installation
 
-### npmjs (Recommended)
+### VSCode Extension (Easiest)
+
+Install directly from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=harrybin.visuals-mcp):
+
+1. Open VS Code
+2. Go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)
+3. Search for "Visuals MCP"
+4. Click Install
+
+The extension will automatically register the MCP server with VS Code and GitHub Copilot Chat.
+
+### npmjs (Recommended for other MCP Clients)
 
 In **VSCode** github Copilot Chat 
 - click on the tools icon (Configure tools...) 

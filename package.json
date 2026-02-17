@@ -1,10 +1,26 @@
 {
-    "name": "@harrybin/visuals-mcp",
-    "version": "1.5.4",
+    "name": "visuals-mcp",
+    "displayName": "Visuals MCP",
+    "version": "1.5.5",
     "mcpName": "io.github.harrybin/visuals-mcp",
     "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, master-detail views, tree views for hierarchical data, and customizable lists",
+    "publisher": "harrybin",
+    "icon": "visuals-mcp-logo.png",
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.101.0"
+    },
+    "categories": [
+        "MCP",
+        "AI",
+        "Chat",
+        "Visualization"
+    ],
     "type": "module",
-    "main": "dist/server.js",
+    "main": "out/extension.js",
+    "activationEvents": [
+        "onStartupFinished"
+    ],
     "bin": {
         "visuals-mcp": "dist/server.js"
     },
@@ -17,8 +33,19 @@
             "transport": "stdio"
         }
     },
+    "contributes": {
+        "mcpServerDefinitionProviders": [
+            {
+                "id": "visuals-mcp",
+                "label": "Visuals MCP"
+            }
+        ]
+    },
     "scripts": {
-        "build": "npm run build:ui && npm run build:server",
+        "vscode:prepublish": "npm run build",
+        "compile": "tsc -p tsconfig.extension.json && npm run build:server",
+        "watch:extension": "tsc -watch -p tsconfig.extension.json",
+        "build": "npm run build:ui && npm run build:server && tsc -p tsconfig.extension.json",
         "build:ui": "npm run build:table && npm run build:image && npm run build:master-detail && npm run build:tree && npm run build:list",
         "build:table": "vite build --config vite.config.table.ts",
         "build:image": "vite build --config vite.config.image.ts",
@@ -27,9 +54,15 @@
         "build:list": "vite build --config vite.config.list.ts",
         "build:server": "tsc -p tsconfig.server.json",
         "serve": "node dist/server.js",
-        "dev": "concurrently \"npm run watch:ui\" \"tsx watch server.ts\"",
+        "dev": "concurrently \"npm run watch:ui\" \"npm run watch:extension\" \"tsx watch server.ts\"",
         "watch:ui": "concurrently \"vite build --watch --config vite.config.table.ts\" \"vite build --watch --config vite.config.image.ts\" \"vite build --watch --config vite.config.tree.ts\" \"vite build --watch --config vite.config.list.ts\"",
+        "sync-server-version": "node -e \"const p=require('./package.json'),s=require('./server.json');s.version=p.version;s.packages[0].version=p.version;require('fs').writeFileSync('server.json',JSON.stringify(s,null,4)+'\\n')\"",
+        "publish:github": "npm publish --registry https://npm.pkg.github.com --workspace-root",
         "publish:npm": "npm publish --registry https://registry.npmjs.org --access public",
+        "publish:vscode": "vsce publish",
+        "publish:mcp": "npm run sync-server-version && .\\mcp-publisher.exe publish",
+        "publish:all": "npm run build && npm run publish:github && npm run publish:npm && npm run publish:vscode && npm run publish:mcp",
+        "package:vscode": "vsce package",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
     },
@@ -37,7 +70,8 @@
         "mcp",
         "mcp-server",
         "mcp-apps",
-        "model-context-protocol",
+        "modelcontextprotocol",
+        "chat",
         "table",
         "tanstack-table",
         "visualization",
@@ -51,7 +85,6 @@
         "list-view"
     ],
     "author": "harrybin",
-    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/harrybin/visuals-mcp.git"
@@ -67,11 +100,9 @@
     },
     "files": [
         "dist",
+        "out",
         "doc",
-        "README.md",
-        "MCP_SETUP.md",
-        "QUICKSTART.md",
-        "EXAMPLES.md"
+        "README.md"
     ],
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.26.0",
@@ -87,12 +118,15 @@
         "@types/node": "^25.2.3",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
+        "@types/vscode": "^1.101.0",
         "@vitejs/plugin-react": "^5.1.4",
+        "@vscode/dts": "^0.4.1",
         "concurrently": "^9.2.1",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
         "vite": "^7.3.1",
         "vite-plugin-singlefile": "^2.3.0",
+        "vsce": "^2.15.0",
         "storybook": "^10.2.8",
         "@storybook/react-vite": "^10.2.8",
         "@chromatic-com/storybook": "^5.0.1",

@@ -1,0 +1,34 @@
+# VSCode Extension files
+
+.vscodeignore
+VSCODE_EXTENSION.md
+
+# Development & Build files
+src/**/*.stories.tsx
+src/**/*.test.ts
+src/**/*.test.tsx
+.github
+.storybook
+storybook-static
+tsconfig.extension.json
+vite.config.*.ts
+vitest.config.ts
+vitest.shims.d.ts
+out
+**/*.vsix
+
+# Documentation
+doc
+DEPLOYMENT.md
+MCP_SETUP.md
+QUICKSTART.md
+EXAMPLES.md
+
+# Misc
+.git
+.gitignore
+.env
+.env.local
+npm-debug.log
+yarn-error.log
+build-storybook.log

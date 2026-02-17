@@ -9,6 +9,138 @@
 				"publish"
 			],
 			"group": "build"
+		},
+		{
+			"label": "Build Extension",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Build the extension, MCP server, and UI bundles"
+		},
+		{
+			"label": "Publish to VSCode Marketplace",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"publish:vscode"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Publish the extension to VSCode Marketplace (requires VSCE_PAT env var)",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Package VSCode Extension",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"package:vscode"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Create a .vsix file for manual upload or offline distribution"
+		},
+		{
+			"label": "Build + Publish to VSCode",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Build and then publish to VSCode Marketplace",
+			"dependsOn": [
+				"Build Extension"
+			],
+			"dependsOrder": "sequence"
+		},
+		{
+			"label": "Build + Package VSCode Extension",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"package:vscode"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Build and create .vsix file",
+			"dependsOn": [
+				"Build Extension"
+			],
+			"dependsOrder": "sequence"
+		},
+		{
+			"label": "Publish to NPM",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"publish:npm"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Publish the MCP server to NPM registry (requires NPM_TOKEN env var)"
+		},
+		{
+			"label": "Publish to GitHub Packages",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"publish:github"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Publish to GitHub Packages (requires GITHUB_TOKEN env var)",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Publish to All Registries",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"publish:all"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Build and publish to GitHub Packages, NPM Registry, and VSCode Marketplace (requires all 3 tokens)",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Build + Publish All",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"publish:all"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "One-step build and publish to all registries (GitHub, NPM, VSCode)",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
 		}
 	]
 }
