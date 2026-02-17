@@ -1,6 +1,6 @@
 {
     "name": "@harrybin/visuals-mcp",
-    "version": "1.5.3",
+    "version": "1.5.4",
     "mcpName": "io.github.harrybin/visuals-mcp",
     "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, master-detail views, tree views for hierarchical data, and customizable lists",
     "type": "module",
@@ -60,6 +60,7 @@
         "url": "https://github.com/harrybin/visuals-mcp/issues"
     },
     "homepage": "https://github.com/harrybin/visuals-mcp#readme",
+    "logo": "https://raw.githubusercontent.com/harrybin/visuals-mcp/master/visuals-mcp-logo.png",
     "publishConfig": {
         "registry": "https://registry.npmjs.org",
         "access": "public"

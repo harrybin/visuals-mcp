@@ -1,6 +1,12 @@
 # MCP Visuals Server
 
+![MCP Visuals Logo](visuals-mcp-logo.png)
+
 An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **master-detail views** for browsing collections, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
+
+### Quick Install
+
+[![Install with VS Code](https://img.shields.io/badge/install-VS%20Code-007ACC?style=for-the-badge&logo=visualstudiocode)](vscode:mcp/install?%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40harrybin%2Fvisuals-mcp%22%5D%7D)
 
 ## Features
 
