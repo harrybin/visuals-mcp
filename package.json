@@ -1,6 +1,6 @@
 {
     "name": "@harrybin/visuals-mcp",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "mcpName": "io.github.harrybin/visuals-mcp",
     "description": "MCP server providing interactive visualizations: tables with TanStack Table, image previews, master-detail views, tree views for hierarchical data, and customizable lists",
     "type": "module",
