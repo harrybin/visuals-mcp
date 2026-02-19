@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xebia Portfolio - MCP Table Demo</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@19.2.4",
+            "react-dom": "https://esm.sh/react-dom@19.2.4",
+            "react-dom/client": "https://esm.sh/react-dom@19.2.4/client",
+            "@tanstack/react-table": "https://esm.sh/@tanstack/react-table@8.21.3"
+        }
+    }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Variable', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--color-background-primary, #1e1e1e);
+            color: var(--color-text-primary, #cccccc);
+            line-height: 1.6;
+        }
+        
+        :root.theme-dark {
+            --color-background-primary: #1e1e1e;
+            --color-background-secondary: #252526;
+            --color-background-tertiary: #2d2d30;
+            --color-text-primary: #cccccc;
+            --color-text-secondary: #858585;
+            --color-border: #3e3e42;
+            --color-accent: #0078d4;
+            --color-accent-hover: #1a86d9;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: var(--color-text-primary);
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .description {
+            color: var(--color-text-secondary);
+            margin: 0 0 30px 0;
+            font-size: 14px;
+        }
+        
+        .demo-info {
+            background: var(--color-background-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .demo-info h2 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4EC9B0;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        #root {
+            background: var(--color-background-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+        
+        /* Table styles matching the MCP table app */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-background-primary);
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+        }
+        
+        th {
+            background: var(--color-background-tertiary);
+            color: var(--color-text-primary);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        th:hover {
+            background: #323233;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+            font-size: 13px;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background: var(--color-background-tertiary);
+        }
+        
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .pagination-info {
+            color: var(--color-text-secondary);
+            font-size: 13px;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        button {
+            background: var(--color-background-tertiary);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #323233;
+            border-color: var(--color-accent);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .sort-icon {
+            display: inline-block;
+            margin-left: 6px;
+            opacity: 0.5;
+        }
+        
+        .boolean-cell {
+            text-align: center;
+        }
+        
+        .number-cell {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Xebia Portfolio - Digital Transformation Projects</h1>
+        <p class="description">Interactive table visualization using MCP Visuals Server</p>
+        
+        <div class="demo-info">
+            <h2>📊 Portfolio Statistics</h2>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">Total Projects</span>
+                    <span class="stat-value">15</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Active Projects</span>
+                    <span class="stat-value">10</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Completed Projects</span>
+                    <span class="stat-value">5</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Total Team Members</span>
+                    <span class="stat-value">181</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Avg Duration</span>
+                    <span class="stat-value">16 months</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="root">
+            <div class="loading">Loading table visualization...</div>
+        </div>
+    </div>
+    
+    <script type="module">
+        // Xebia Portfolio Data
+        const data = {
+            columns: [
+                { key: 'id', label: 'ID', type: 'number' },
+                { key: 'client', label: 'Client', type: 'string' },
+                { key: 'project', label: 'Project Name', type: 'string' },
+                { key: 'technology', label: 'Technology Stack', type: 'string' },
+                { key: 'team_size', label: 'Team', type: 'number' },
+                { key: 'duration_months', label: 'Duration', type: 'number' },
+                { key: 'status', label: 'Status', type: 'string' },
+                { key: 'start_date', label: 'Start Date', type: 'date' },
+                { key: 'completed', label: 'Done', type: 'boolean' },
+            ],
+            rows: [
+                { id: 1, client: 'ING Bank', project: 'Cloud Migration', technology: 'AWS, Kubernetes, Terraform', team_size: 12, duration_months: 18, status: 'Active', start_date: '2023-01-15', completed: false },
+                { id: 2, client: 'KLM Airlines', project: 'Mobile App Modernization', technology: 'React Native, Node.js, GraphQL', team_size: 8, duration_months: 12, status: 'Active', start_date: '2023-06-01', completed: false },
+                { id: 3, client: 'Rabobank', project: 'Data Analytics Platform', technology: 'Azure, Python, Spark, PowerBI', team_size: 15, duration_months: 24, status: 'Active', start_date: '2022-09-01', completed: false },
+                { id: 4, client: 'Philips Healthcare', project: 'IoT Device Management', technology: 'Azure IoT Hub, C#, React', team_size: 10, duration_months: 15, status: 'Completed', start_date: '2022-03-01', completed: true },
+                { id: 5, client: 'ABN AMRO', project: 'API Gateway Implementation', technology: 'Kong, Docker, Kubernetes', team_size: 6, duration_months: 9, status: 'Completed', start_date: '2023-02-15', completed: true },
+                { id: 6, client: 'Heineken', project: 'Supply Chain Optimization', technology: 'SAP, Java, Angular', team_size: 14, duration_months: 20, status: 'Active', start_date: '2023-03-01', completed: false },
+                { id: 7, client: 'Shell', project: 'Energy Trading Platform', technology: 'Scala, Kafka, Kubernetes', team_size: 18, duration_months: 30, status: 'Active', start_date: '2022-11-01', completed: false },
+                { id: 8, client: 'bol.com', project: 'E-commerce Platform Upgrade', technology: 'Java, Spring Boot, Redis', team_size: 20, duration_months: 16, status: 'Completed', start_date: '2022-06-01', completed: true },
+                { id: 9, client: 'TomTom', project: 'Map Data Pipeline', technology: 'Python, Apache Airflow, GCP', team_size: 9, duration_months: 12, status: 'Active', start_date: '2023-08-01', completed: false },
+                { id: 10, client: 'NS (Dutch Railways)', project: 'Passenger Info System', technology: 'Vue.js, .NET Core, Azure', team_size: 11, duration_months: 14, status: 'Active', start_date: '2023-04-01', completed: false },
+                { id: 11, client: 'Ahold Delhaize', project: 'Customer Loyalty Platform', technology: 'React, Node.js, MongoDB', team_size: 13, duration_months: 18, status: 'Active', start_date: '2023-01-01', completed: false },
+                { id: 12, client: 'Ziggo', project: 'Network Monitoring Dashboard', technology: 'Grafana, Prometheus, Go', team_size: 7, duration_months: 10, status: 'Completed', start_date: '2022-12-01', completed: true },
+                { id: 13, client: 'ASML', project: 'Manufacturing Analytics', technology: 'Python, TensorFlow, Databricks', team_size: 16, duration_months: 22, status: 'Active', start_date: '2023-02-01', completed: false },
+                { id: 14, client: 'Aegon', project: 'Insurance Claims Portal', technology: 'Angular, Java, Oracle', team_size: 12, duration_months: 15, status: 'Active', start_date: '2023-07-01', completed: false },
+                { id: 15, client: 'PostNL', project: 'Parcel Tracking System', technology: 'Microservices, RabbitMQ, PostgreSQL', team_size: 10, duration_months: 13, status: 'Completed', start_date: '2022-08-01', completed: true },
+            ]
+        };
+        
+        // Simple table renderer (without full React/TanStack Table complexity)
+        function renderTable() {
+            const root = document.getElementById('root');
+            
+            // Create table HTML
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            ${data.columns.map(col => `<th>${col.label}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.rows.map(row => `
+                            <tr>
+                                ${data.columns.map(col => {
+                                    const value = row[col.key];
+                                    let cellClass = '';
+                                    let displayValue = value;
+                                    
+                                    if (col.type === 'boolean') {
+                                        cellClass = 'boolean-cell';
+                                        displayValue = value ? '✓' : '✗';
+                                    } else if (col.type === 'number') {
+                                        cellClass = 'number-cell';
+                                        displayValue = value?.toLocaleString() || '';
+                                    } else if (col.type === 'date') {
+                                        displayValue = value ? new Date(value).toLocaleDateString() : '';
+                                    }
+                                    
+                                    return `<td class="${cellClass}">${displayValue}</td>`;
+                                }).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Showing ${data.rows.length} of ${data.rows.length} projects
+                    </div>
+                </div>
+            `;
+            
+            root.innerHTML = tableHTML;
+        }
+        
+        // Render on load
+        renderTable();
+    </script>
+</body>
+</html>

@@ -18,3 +18,8 @@ out/
 storybook-static
 .mcpregistry_github_token
 .mcpregistry_registry_token
+
+# Demo/temporary files
+demo-table-screenshot.ts
+demo-xebia-portfolio.html
+take-screenshot.mjs
