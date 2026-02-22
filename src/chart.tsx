@@ -235,7 +235,7 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
             <ScatterChart {...commonProps}>
               {showGrid && <CartesianGrid strokeDasharray="3 3" />}
               <XAxis dataKey={chart.xAxisKey || "x"} type="number" />
-              <YAxis dataKey={chart.series?.[0]?.dataKey || "y"} type="number" />
+              <YAxis type="number" />
               {showTooltip && <Tooltip />}
               {showLegend && <Legend />}
               {chart.series?.map((series, idx) => (

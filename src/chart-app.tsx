@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { useApp } from "@modelcontextprotocol/ext-apps/react";
 import type { ChartToolInput } from "../types";
+import { ChartToolInputSchema } from "../types";
 import { ChartView } from "./chart";
 import "./app.css";
 import "./chart.css";
@@ -76,10 +77,16 @@ function ChartApp() {
           const uiData = result._meta.ui.data as any;
 
           if (uiData.charts && chartData) {
-            setChartData({
-              ...chartData,
-              charts: uiData.charts,
-            });
+            try {
+              // Validate the updated data conforms to the schema
+              const validatedData = ChartToolInputSchema.parse({
+                ...chartData,
+                charts: uiData.charts,
+              });
+              setChartData(validatedData);
+            } catch (error) {
+              console.error("Invalid chart data in tool result:", error);
+            }
           }
         }
       };
