@@ -208,7 +208,7 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
 
         case "pie":
           return (
-            <PieChart>
+            <PieChart onClick={() => handleChartClick(index)}>
               <Pie
                 data={chart.data}
                 dataKey={chart.dataKey || "value"}
