@@ -18,6 +18,7 @@ import {
   MasterDetailToolInputSchema,
   TreeToolInputSchema,
   ListToolInputSchema,
+  ChartToolInputSchema,
 } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -539,6 +540,134 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: "display_chart",
+        description:
+          "Display interactive charts with support for multiple chart types: line, bar, area, pie, scatter, and composed charts. " +
+          "Use this to visualize data trends, comparisons, distributions, and relationships. " +
+          "Supports multiple charts in a single view with customizable layouts (vertical, horizontal, grid). " +
+          "Features include legends, tooltips, grid lines, dual Y-axes, and data export (JSON, CSV).",
+        inputSchema: {
+          type: "object",
+          properties: {
+            charts: {
+              type: "array",
+              description: "Array of chart configurations to display",
+              items: {
+                type: "object",
+                properties: {
+                  type: {
+                    type: "string",
+                    enum: ["line", "bar", "area", "pie", "scatter", "composed"],
+                    description: "Type of chart to display",
+                  },
+                  data: {
+                    type: "array",
+                    description: "Array of data points for the chart",
+                    items: { type: "object" },
+                  },
+                  series: {
+                    type: "array",
+                    description: "Series configurations (for line, bar, area charts)",
+                    items: {
+                      type: "object",
+                      properties: {
+                        dataKey: {
+                          type: "string",
+                          description: "Key in data objects for this series",
+                        },
+                        name: {
+                          type: "string",
+                          description: "Display name for the series",
+                        },
+                        color: {
+                          type: "string",
+                          description: "Color for the series (hex or CSS color)",
+                        },
+                        type: {
+                          type: "string",
+                          enum: ["line", "bar", "area"],
+                          description: "Type for composed charts",
+                        },
+                        yAxisId: {
+                          type: "string",
+                          default: "left",
+                          description: "Y-axis identifier (left or right)",
+                        },
+                      },
+                      required: ["dataKey"],
+                    },
+                  },
+                  xAxisKey: {
+                    type: "string",
+                    description:
+                      "Key for X-axis data (for line, bar, area, scatter charts)",
+                  },
+                  nameKey: {
+                    type: "string",
+                    description: "Key for labels (for pie charts)",
+                  },
+                  dataKey: {
+                    type: "string",
+                    description: "Key for values (for pie charts)",
+                  },
+                  title: {
+                    type: "string",
+                    description: "Title for this chart",
+                  },
+                  width: {
+                    type: "number",
+                    description: "Width in pixels (default: 100%)",
+                  },
+                  height: {
+                    type: "number",
+                    default: 300,
+                    description: "Height in pixels",
+                  },
+                  showLegend: {
+                    type: "boolean",
+                    default: true,
+                    description: "Show legend",
+                  },
+                  showGrid: {
+                    type: "boolean",
+                    default: true,
+                    description: "Show grid lines",
+                  },
+                  showTooltip: {
+                    type: "boolean",
+                    default: true,
+                    description: "Show tooltips on hover",
+                  },
+                  stacked: {
+                    type: "boolean",
+                    default: false,
+                    description: "Stack bars/areas (for bar and area charts)",
+                  },
+                },
+                required: ["type", "data"],
+              },
+            },
+            title: {
+              type: "string",
+              description: "Overall title for the chart view",
+            },
+            layout: {
+              type: "string",
+              enum: ["vertical", "horizontal", "grid"],
+              default: "vertical",
+              description: "Layout for multiple charts",
+            },
+          },
+          required: ["charts"],
+        },
+        _meta: {
+          ui: {
+            resourceUri: "chart://display",
+            visibility: ["model", "app"],
+          },
+        },
+      },
     ],
   };
 });
@@ -761,6 +890,29 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  if (name === "display_chart") {
+    const input = ChartToolInputSchema.parse(args);
+
+    const totalDataPoints = input.charts.reduce(
+      (sum, chart) => sum + chart.data.length,
+      0
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Displaying ${input.charts.length} chart${input.charts.length !== 1 ? "s" : ""} with ${totalDataPoints} total data points.${input.title ? ` Title: ${input.title}` : ""}`,
+        },
+      ],
+      _meta: {
+        ui: {
+          data: input,
+        },
+      },
+    };
+  }
+
   throw new Error(`Unknown tool: ${name}`);
 });
 
@@ -802,6 +954,13 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         name: "Interactive List Display",
         description:
           "HTML resource for rendering interactive lists with drag-and-drop reordering, checkboxes, and export",
+        mimeType: "text/html",
+      },
+      {
+        uri: "chart://display",
+        name: "Interactive Chart Display",
+        description:
+          "HTML resource for rendering interactive charts (line, bar, area, pie, scatter, composed) with Recharts",
         mimeType: "text/html",
       },
     ],
@@ -901,6 +1060,27 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   if (uri === "list://display") {
     try {
       const htmlPath = join(__dirname, "mcp-list.html");
+      const htmlContent = readFileSync(htmlPath, "utf-8");
+
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "text/html",
+            text: htmlContent,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to read HTML resource. Make sure to run 'npm run build' first. Error: ${error}`,
+      );
+    }
+  }
+
+  if (uri === "chart://display") {
+    try {
+      const htmlPath = join(__dirname, "mcp-chart.html");
       const htmlContent = readFileSync(htmlPath, "utf-8");
 
       return {
