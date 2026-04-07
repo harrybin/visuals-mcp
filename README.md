@@ -175,6 +175,22 @@ Supported chart types:
 - `scatter`
 - `composed`
 
+### Repository Metrics Dashboard Example
+
+Generate fresh metrics first:
+
+```bash
+npm run metrics:repo:write
+```
+
+This writes a snapshot to `doc/repo-metrics.json`.
+
+Then render a dashboard that uses all chart types (`line`, `bar`, `area`, `pie`, `scatter`, `composed`):
+
+
+
+For release-quality docs, always regenerate `doc/repo-metrics.json` right before updating README examples.
+
 
 ### 1. Configure MCP Server
 
