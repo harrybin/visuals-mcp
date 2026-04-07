@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import {
   LineChart,
   Line,
@@ -48,9 +48,62 @@ const copyToClipboard = async (text: string): Promise<boolean> => {
   }
 };
 
+const copyBlobToClipboard = async (
+  blob: Blob,
+  mimeType: string,
+): Promise<boolean> => {
+  try {
+    if (typeof ClipboardItem === "undefined" || !navigator.clipboard?.write) {
+      return false;
+    }
+
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        [mimeType]: blob,
+      }),
+    ]);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const svgToJpegBlob = async (
+  svgMarkup: string,
+  width: number,
+  height: number,
+): Promise<Blob | null> => {
+  return new Promise((resolve) => {
+    const image = new Image();
+    const svgDataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgMarkup)}`;
+
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(null);
+        return;
+      }
+
+      // Use a white background for JPG output since JPG has no alpha channel.
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(image, 0, 0, width, height);
+      canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.92);
+    };
+
+    image.onerror = () => resolve(null);
+    image.src = svgDataUri;
+  });
+};
+
 export function ChartView({ chartData, onStateChange }: ChartViewProps) {
   const [activeChart, setActiveChart] = useState<number>(0);
   const [toast, setToast] = useState<string | null>(null);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
 
   const showToast = (message: string) => {
     setToast(message);
@@ -69,7 +122,7 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
       const summary = `Chart ${chartIndex + 1} of ${chartData.charts.length}`;
       onStateChange(state, summary);
     },
-    [chartData.charts.length, onStateChange]
+    [chartData.charts.length, onStateChange],
   );
 
   const handleChartClick = (chartIndex: number) => {
@@ -85,14 +138,14 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
 
   const exportAsCSV = async () => {
     const allData: string[] = [];
-    
+
     chartData.charts.forEach((chart, idx) => {
       if (chart.title) {
         allData.push(`\n# ${chart.title}\n`);
       } else {
         allData.push(`\n# Chart ${idx + 1}\n`);
       }
-      
+
       if (chart.data.length === 0) {
         allData.push("No data\n");
         return;
@@ -101,7 +154,7 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
       // Get all keys from first data point
       const keys = Object.keys(chart.data[0]);
       allData.push(keys.join(","));
-      
+
       chart.data.forEach((row) => {
         const values = keys.map((key) => {
           const val = row[key];
@@ -113,9 +166,100 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
         allData.push(values.join(","));
       });
     });
-    
+
     const ok = await copyToClipboard(allData.join("\n"));
     showToast(ok ? "Chart data copied as CSV!" : "Copy failed");
+  };
+
+  const getActiveChartSvg = (): {
+    svgMarkup: string;
+    width: number;
+    height: number;
+  } | null => {
+    const container = chartContainerRef.current;
+    if (!container) {
+      return null;
+    }
+
+    const chartItems = container.querySelectorAll<HTMLElement>(".chart-item");
+    const activeItem = chartItems[activeChart];
+    if (!activeItem) {
+      return null;
+    }
+
+    const svg = activeItem.querySelector<SVGElement>(
+      "svg.recharts-surface, svg",
+    );
+    if (!svg) {
+      return null;
+    }
+
+    const clonedSvg = svg.cloneNode(true) as SVGElement;
+    if (!clonedSvg.getAttribute("xmlns")) {
+      clonedSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    }
+    if (!clonedSvg.getAttribute("xmlns:xlink")) {
+      clonedSvg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+    }
+
+    const bounds = svg.getBoundingClientRect();
+    const width = Math.max(1, Math.round(bounds.width));
+    const height = Math.max(1, Math.round(bounds.height));
+
+    if (!clonedSvg.getAttribute("viewBox")) {
+      clonedSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    }
+    if (!clonedSvg.getAttribute("width")) {
+      clonedSvg.setAttribute("width", String(width));
+    }
+    if (!clonedSvg.getAttribute("height")) {
+      clonedSvg.setAttribute("height", String(height));
+    }
+
+    return {
+      svgMarkup: new XMLSerializer().serializeToString(clonedSvg),
+      width,
+      height,
+    };
+  };
+
+  const exportAsSVG = async () => {
+    const svgData = getActiveChartSvg();
+    if (!svgData) {
+      showToast("No active chart SVG found");
+      return;
+    }
+
+    const svgBlob = new Blob([svgData.svgMarkup], { type: "image/svg+xml" });
+    const copiedAsImage = await copyBlobToClipboard(svgBlob, "image/svg+xml");
+    if (copiedAsImage) {
+      showToast("Active chart copied as SVG!");
+      return;
+    }
+
+    const copiedAsText = await copyToClipboard(svgData.svgMarkup);
+    showToast(copiedAsText ? "SVG markup copied to clipboard!" : "Copy failed");
+  };
+
+  const exportAsJPG = async () => {
+    const svgData = getActiveChartSvg();
+    if (!svgData) {
+      showToast("No active chart SVG found");
+      return;
+    }
+
+    const jpgBlob = await svgToJpegBlob(
+      svgData.svgMarkup,
+      svgData.width,
+      svgData.height,
+    );
+    if (!jpgBlob) {
+      showToast("Failed to render JPG");
+      return;
+    }
+
+    const copied = await copyBlobToClipboard(jpgBlob, "image/jpeg");
+    showToast(copied ? "Active chart copied as JPG!" : "Copy failed");
   };
 
   const renderChart = (chart: ChartConfig, index: number) => {
@@ -149,7 +293,9 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
                   type="monotone"
                   dataKey={series.dataKey}
                   name={series.name || series.dataKey}
-                  stroke={series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]}
+                  stroke={
+                    series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]
+                  }
                   yAxisId={series.yAxisId || "left"}
                 />
               ))}
@@ -172,7 +318,9 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
                   key={series.dataKey}
                   dataKey={series.dataKey}
                   name={series.name || series.dataKey}
-                  fill={series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]}
+                  fill={
+                    series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]
+                  }
                   yAxisId={series.yAxisId || "left"}
                   stackId={chart.stacked ? "stack" : undefined}
                 />
@@ -197,8 +345,12 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
                   type="monotone"
                   dataKey={series.dataKey}
                   name={series.name || series.dataKey}
-                  stroke={series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]}
-                  fill={series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]}
+                  stroke={
+                    series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]
+                  }
+                  fill={
+                    series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]
+                  }
                   yAxisId={series.yAxisId || "left"}
                   stackId={chart.stacked ? "stack" : undefined}
                 />
@@ -243,7 +395,9 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
                   key={series.dataKey}
                   name={series.name || series.dataKey}
                   dataKey={series.dataKey}
-                  fill={series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]}
+                  fill={
+                    series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length]
+                  }
                 />
               ))}
             </ScatterChart>
@@ -261,10 +415,11 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
               {showTooltip && <Tooltip />}
               {showLegend && <Legend />}
               {chart.series?.map((series, idx) => {
-                const color = series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
+                const color =
+                  series.color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
                 const name = series.name || series.dataKey;
                 const yAxisId = series.yAxisId || "left";
-                
+
                 switch (series.type) {
                   case "bar":
                     return (
@@ -343,10 +498,16 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
           <button onClick={exportAsCSV} title="Copy chart data as CSV">
             📋 Copy CSV
           </button>
+          <button onClick={exportAsJPG} title="Copy active chart as JPG image">
+            🖼️ Copy JPG
+          </button>
+          <button onClick={exportAsSVG} title="Copy active chart as SVG">
+            🧩 Copy SVG
+          </button>
         </div>
       </div>
 
-      <div className={`chart-container ${layoutClass}`}>
+      <div className={`chart-container ${layoutClass}`} ref={chartContainerRef}>
         {chartData.charts.length === 0 ? (
           <div className="chart-empty">No charts to display</div>
         ) : (
@@ -356,7 +517,8 @@ export function ChartView({ chartData, onStateChange }: ChartViewProps) {
 
       <div className="chart-info">
         <span>
-          {chartData.charts.length} chart{chartData.charts.length !== 1 ? "s" : ""}
+          {chartData.charts.length} chart
+          {chartData.charts.length !== 1 ? "s" : ""}
         </span>
       </div>
     </div>
