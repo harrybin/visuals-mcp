@@ -575,7 +575,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                   },
                   series: {
                     type: "array",
-                    description: "Series configurations (for line, bar, area charts)",
+                    description:
+                      "Series configurations (for line, bar, area charts)",
                     items: {
                       type: "object",
                       properties: {
@@ -589,7 +590,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         },
                         color: {
                           type: "string",
-                          description: "Color for the series (hex or CSS color)",
+                          description:
+                            "Color for the series (hex or CSS color)",
                         },
                         type: {
                           type: "string",
@@ -902,7 +904,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     const totalDataPoints = input.charts.reduce(
       (sum, chart) => sum + chart.data.length,
-      0
+      0,
     );
 
     return {
