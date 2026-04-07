@@ -1,7 +1,7 @@
 {
     "name": "visuals-mcp",
     "displayName": "Visuals MCP",
-    "version": "1.5.7",
+    "version": "1.6.0",
     "mcpName": "io.github.harrybin/visuals-mcp",
     "description": "MCP server providing interactive visualizations: tables with TanStack Table, charts with Recharts, image previews, master-detail views, tree views for hierarchical data, and customizable lists",
     "publisher": "harrybin",
@@ -51,6 +51,7 @@
         "build:master-detail": "vite build --config vite.config.master-detail.ts",
         "build:tree": "vite build --config vite.config.tree.ts",
         "build:list": "vite build --config vite.config.list.ts",
+        "build:charts": "npm run build:chart",
         "build:chart": "vite build --config vite.config.chart.ts",
         "build:server": "tsc -p tsconfig.server.json && esbuild dist/server.js --bundle --platform=node --format=esm --outfile=dist/server.bundle.mjs --external:fs --external:path --external:url --external:node:* --banner:js=\"import{createRequire}from'module';const require=createRequire(import.meta.url);\"",
         "serve": "node dist/server.js",
@@ -62,7 +63,7 @@
         "publish:vscode": "node scripts/vsce-publish.cjs",
         "publish:mcp": "node scripts/mcp-publish.cjs",
         "publish:all": "npm run build && npm run publish:github && npm run publish:npm && npm run publish:vscode && npm run publish:mcp",
-        "package:vscode": "vsce package",
+        "package:vscode": "vsce package --no-dependencies",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
     },

@@ -114,6 +114,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     tools: [
       {
         name: "display_table",
+        title: "Display Table",
         description:
           "Display an interactive table with sorting, filtering, pagination, column visibility, and row selection. " +
           "Accepts column definitions and row data. Returns a visual table component that users can interact with.",
@@ -174,6 +175,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "query_table_data",
+        title: "Query Table Data",
         description:
           "Query table data with server-side sorting and filtering. UI-only tool for performance with large datasets.",
         inputSchema: {
@@ -202,6 +204,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "display_image",
+        title: "Display Image",
         description:
           "Display/show any image to the user with an interactive preview card. Use this tool to show screenshots, diagrams, charts, photographs, or any visual content. Provides optional metadata including title, caption, dimensions, and file information. Always use this tool whenever you need to present visual content. This also applies to listings and any other imageoperations like get, download etc..these formats are explicitly handled: PNG, JPG, JPEG, GIF, SVG, WebP, BMP. The UI itself can display any image if the src is a valid URL or data URI, but local file paths are only auto-converted for those extensions",
         inputSchema: {
@@ -259,6 +262,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "display_master_detail",
+        title: "Display Master Detail",
         description:
           "Display a master-detail view with a list of items on the left/top and details on the right/bottom. " +
           "The detail panel can show tables, images, lists, or custom text/HTML content. Perfect for browsing collections, " +
@@ -394,6 +398,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "display_tree",
+        title: "Display Tree",
         description:
           "Display an interactive tree view for hierarchical data structures. " +
           "Use this tool to visualize file systems, organizational charts, nested categories, JSON/XML structures, or any hierarchical relationships. " +
@@ -464,6 +469,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "display_list",
+        title: "Display List",
         description:
           "Display an interactive, customizable list with optional checkboxes, drag-and-drop reordering, image thumbnails, and copy/export functionality. " +
           "Perfect for displaying any type of list: tasks, items, options, files, or any sequential data. " +
@@ -542,6 +548,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "display_chart",
+        title: "Display Chart",
         description:
           "Display interactive charts with support for multiple chart types: line, bar, area, pie, scatter, and composed charts. " +
           "Use this to visualize data trends, comparisons, distributions, and relationships. " +

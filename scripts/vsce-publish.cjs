@@ -37,7 +37,7 @@ const pkg = JSON.parse(
 console.log(`Publishing ${pkg.name}@${pkg.version} to VS Code Marketplace...`);
 
 try {
-  execSync(`vsce publish -p ${token}`, {
+  execSync(`vsce publish --no-dependencies -p ${token}`, {
     stdio: "pipe",
     cwd: path.join(__dirname, ".."),
   });
