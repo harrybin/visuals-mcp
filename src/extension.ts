@@ -22,9 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
           const serverPath = context.asAbsolutePath("dist/server.bundle.mjs");
           outputChannel.appendLine(`Providing MCP server at: ${serverPath}`);
           return [
-            new vscode.McpStdioServerDefinition("visuals-mcp", "node", [
-              serverPath,
-            ]),
+            new vscode.McpStdioServerDefinition(
+              "visuals-mcp-extension",
+              "node",
+              [serverPath],
+            ),
           ];
         },
 

@@ -1,0 +1,113 @@
+{
+  "generatedAt": "2026-04-07T08:56:54.954Z",
+  "scope": "source-focused",
+  "includeBinary": false,
+  "totals": {
+    "files": 75,
+    "lines": 18785,
+    "sourceFiles": 50,
+    "sourceLines": 9651
+  },
+  "byLanguage": [
+    {
+      "language": "JSON",
+      "files": 12,
+      "lines": 8291
+    },
+    {
+      "language": "TypeScript/React",
+      "files": 17,
+      "lines": 4978
+    },
+    {
+      "language": "TypeScript",
+      "files": 17,
+      "lines": 2159
+    },
+    {
+      "language": "CSS",
+      "files": 7,
+      "lines": 1836
+    },
+    {
+      "language": "Markdown",
+      "files": 3,
+      "lines": 600
+    },
+    {
+      "language": "CommonJS",
+      "files": 4,
+      "lines": 399
+    },
+    {
+      "language": "Other",
+      "files": 7,
+      "lines": 303
+    },
+    {
+      "language": "YAML",
+      "files": 2,
+      "lines": 141
+    },
+    {
+      "language": "HTML",
+      "files": 6,
+      "lines": 78
+    }
+  ],
+  "byExtensionTop12": [
+    {
+      "ext": ".json",
+      "files": 12,
+      "lines": 8291
+    },
+    {
+      "ext": ".tsx",
+      "files": 17,
+      "lines": 4978
+    },
+    {
+      "ext": ".ts",
+      "files": 17,
+      "lines": 2159
+    },
+    {
+      "ext": ".css",
+      "files": 7,
+      "lines": 1836
+    },
+    {
+      "ext": ".md",
+      "files": 3,
+      "lines": 600
+    },
+    {
+      "ext": ".cjs",
+      "files": 4,
+      "lines": 399
+    },
+    {
+      "ext": "[no_ext]",
+      "files": 7,
+      "lines": 303
+    },
+    {
+      "ext": ".yml",
+      "files": 2,
+      "lines": 141
+    },
+    {
+      "ext": ".html",
+      "files": 6,
+      "lines": 78
+    }
+  ],
+  "productMetrics": {
+    "mcpHtmlEntryPoints": 6,
+    "viteConfigFiles": 6,
+    "storybookStories": 7,
+    "npmScripts": 27,
+    "dependencies": 10,
+    "devDependencies": 24
+  }
+}

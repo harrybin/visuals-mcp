@@ -290,3 +290,77 @@ export interface TreeState {
   expandedNodeIds?: string[];
   selectedNodeId?: string;
 }
+
+/**
+ * Chart type enumeration
+ */
+export const ChartTypeSchema = z.enum([
+  "line",
+  "bar",
+  "area",
+  "pie",
+  "scatter",
+  "composed",
+]);
+
+export type ChartType = z.infer<typeof ChartTypeSchema>;
+
+/**
+ * Chart data point schema
+ */
+export const ChartDataPointSchema = z.record(z.string(), z.union([z.number(), z.string()]));
+
+export type ChartDataPoint = z.infer<typeof ChartDataPointSchema>;
+
+/**
+ * Chart series configuration
+ */
+export const ChartSeriesSchema = z.object({
+  dataKey: z.string().describe("Key in data objects for this series"),
+  name: z.string().optional().describe("Display name for the series"),
+  color: z.string().optional().describe("Color for the series (hex or CSS color)"),
+  type: z.enum(["line", "bar", "area"]).optional().describe("Type for composed charts"),
+  yAxisId: z.string().optional().default("left").describe("Y-axis identifier (left or right)"),
+});
+
+export type ChartSeries = z.infer<typeof ChartSeriesSchema>;
+
+/**
+ * Individual chart configuration
+ */
+export const ChartConfigSchema = z.object({
+  type: ChartTypeSchema.describe("Type of chart to display"),
+  data: z.array(ChartDataPointSchema).describe("Array of data points for the chart"),
+  series: z.array(ChartSeriesSchema).optional().describe("Series configurations (for line, bar, area charts)"),
+  xAxisKey: z.string().optional().describe("Key for X-axis data (for line, bar, area, scatter charts)"),
+  nameKey: z.string().optional().describe("Key for labels (for pie charts)"),
+  dataKey: z.string().optional().describe("Key for values (for pie charts)"),
+  title: z.string().optional().describe("Title for this chart"),
+  width: z.number().optional().describe("Width in pixels (default: 100%)"),
+  height: z.number().optional().default(300).describe("Height in pixels"),
+  showLegend: z.boolean().optional().default(true).describe("Show legend"),
+  showGrid: z.boolean().optional().default(true).describe("Show grid lines"),
+  showTooltip: z.boolean().optional().default(true).describe("Show tooltips on hover"),
+  stacked: z.boolean().optional().default(false).describe("Stack bars/areas (for bar and area charts)"),
+});
+
+export type ChartConfig = z.infer<typeof ChartConfigSchema>;
+
+/**
+ * Input schema for the display_chart tool
+ */
+export const ChartToolInputSchema = z.object({
+  charts: z.array(ChartConfigSchema).describe("Array of chart configurations to display"),
+  title: z.string().optional().describe("Overall title for the chart view"),
+  layout: z.enum(["vertical", "horizontal", "grid"]).optional().default("vertical").describe("Layout for multiple charts"),
+});
+
+export type ChartToolInput = z.infer<typeof ChartToolInputSchema>;
+
+/**
+ * Chart state that gets sent back to the agent via updateModelContext
+ */
+export interface ChartState {
+  activeChart?: number;
+  hoveredDataPoint?: any;
+}

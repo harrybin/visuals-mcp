@@ -23,6 +23,18 @@
 			"detail": "Build the extension, MCP server, and UI bundles"
 		},
 		{
+			"label": "Build Charts",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build:charts"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Build the chart UI bundle"
+		},
+		{
 			"label": "Publish to VSCode Marketplace",
 			"type": "shell",
 			"command": "npm",

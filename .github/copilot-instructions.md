@@ -5,10 +5,12 @@
 This is a **Model Context Protocol (MCP) Server** that provides interactive visual UI components for AI agents. It implements the MCP-Apps pattern, enabling LLMs to display tables and images using React + Vite single-file bundling.
 
 **Currently Supported Components:**
+
 - Interactive data tables with sorting, filtering, pagination, row selection, column visibility, and CSV/TSV/PDF export
 - Image preview cards with metadata (title, caption, dimensions, file size)
 
 **Key Technologies:**
+
 - TypeScript + Node.js (server) & React 19 (UI)
 - MCP SDK (`@modelcontextprotocol/sdk`, `@modelcontextprotocol/ext-apps`)
 - TanStack Table v8 (headless table library)
@@ -120,7 +122,7 @@ const resolveThemeMode = (ctx?: any): ThemeMode => {
   // isDarkTheme, theme.kind, colorTheme.kind, colorScheme, etc.
   // Falls back to "dark" if undetected
   // Applies class names: theme-dark or theme-light to document.documentElement
-}
+};
 
 // Respects VS Code safe area insets:
 if (ctx.safeAreaInsets) {
@@ -134,6 +136,7 @@ if (ctx.safeAreaInsets) {
 ### Server (server.ts)
 
 1. **Tool Registration**: Use standard MCP SDK tool registration
+
    ```typescript
    server.setRequestHandler(ListToolsRequestSchema, async () => {
      return {
@@ -148,10 +151,11 @@ if (ctx.safeAreaInsets) {
    ```
 
 2. **Resource Registration**: Handle ReadResourceRequestSchema
+
    ```typescript
    server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
      if (request.params.uri === "table://display") {
-      const htmlContent = readFileSync('dist/mcp-table.html', 'utf-8');
+       const htmlContent = readFileSync("dist/mcp-table.html", "utf-8");
        return { contents: [{ uri, mimeType: "text/html", text: htmlContent }] };
      }
    });
@@ -171,6 +175,7 @@ if (ctx.safeAreaInsets) {
    - Always destructure with defaults: `const { columns = [], rows = [] } = params.arguments || {}`
 
 3. **State Updates to LLM**:
+
    ```typescript
    app.updateModelContext({
      type: "table_state",
@@ -178,17 +183,20 @@ if (ctx.safeAreaInsets) {
        sortBy: sorting,
        filters: columnFilters,
        selectedRowIds: Object.keys(rowSelection),
-       visibleColumns: Object.keys(columnVisibility).filter(k => columnVisibility[k])
+       visibleColumns: Object.keys(columnVisibility).filter(
+         (k) => columnVisibility[k],
+       ),
      },
-     summary: "X rows selected, Y filters active"
+     summary: "X rows selected, Y filters active",
    });
    ```
 
 4. **Calling Server Tools from UI**:
+
    ```typescript
-   const result = await app.callServerTool('query_table_data', {
+   const result = await app.callServerTool("query_table_data", {
      sortBy: sorting,
-     filters: columnFilters
+     filters: columnFilters,
    });
    ```
 
@@ -203,8 +211,9 @@ if (ctx.safeAreaInsets) {
 ### TanStack Table Patterns
 
 1. **Column Definition**: Create columns dynamically from input schema
+
    ```typescript
-   const dynamicColumns = columns.map(col => ({
+   const dynamicColumns = columns.map((col) => ({
      accessorKey: col.key,
      header: col.label,
      enableSorting: col.sortable ?? true,
@@ -215,11 +224,12 @@ if (ctx.safeAreaInsets) {
        if (col.type === "boolean") return value ? "✓" : "✗";
        if (col.type === "number") return value.toLocaleString();
        return String(value ?? "");
-     }
+     },
    }));
    ```
 
 2. **Table Instance**:
+
    ```typescript
    const table = useReactTable({
      data: rows,
@@ -229,7 +239,7 @@ if (ctx.safeAreaInsets) {
      getCoreRowModel: getCoreRowModel(),
      getSortedRowModel: getSortedRowModel(),
      getFilteredRowModel: getFilteredRowModel(),
-     getPaginationRowModel: getPaginationRowModel()
+     getPaginationRowModel: getPaginationRowModel(),
    });
    ```
 
@@ -280,11 +290,13 @@ npm run build
 **Key Detail:** Uses `vite-plugin-singlefile` for zero-external-dependencies bundling.
 
 ### Scripts
+
 - `npm run build` - Build both UIs and server
 - `npm run serve` - Start MCP server (reads from dist/ files)
 - `npm run dev` - Watch mode for development (rebuilds on file change)
 
 ### Testing Workflow
+
 1. Run build: `npm run build`
 2. Start server: `npm run serve`
 3. Use MCP client (VS Code with Copilot or Claude Desktop)
@@ -304,6 +316,20 @@ npm run build
 7. **Accessibility**: Add ARIA labels, keyboard navigation for table interactions
 8. **Performance**: For large datasets (>1000 rows), use server-side pagination via `query_table_data`
 
+## README Update Workflow (Required)
+
+When a task includes updating `README.md` with examples, metrics, or visual dashboard content, you MUST run the repository skill at `.github/skills/readme-metrics-dashboard/SKILL.md`.
+
+Required order:
+
+1. Regenerate metrics using `npm run metrics:repo:write`
+2. Build a chart payload that uses all chart types (`line`, `bar`, `area`, `pie`, `scatter`, `composed`)
+3. Display the dashboard with `display_chart`
+4. Update `README.md` with the reproducible command and payload example based on `doc/repo-metrics.json`
+
+Do not update README dashboard examples from stale or guessed values.
+Do never add such examples as large hardcoded JSON dashboard payload blocks directly in `README.md`; keep examples concise and reference `doc/repo-metrics.json` instead.
+
 ## Future Enhancements
 
 - Add chart visualizations (bar, line, pie)
@@ -321,4 +347,3 @@ npm run build
 - [MCP SDK Documentation](https://github.com/modelcontextprotocol/typescript-sdk)
 - [TanStack Table Docs](https://tanstack.com/table/latest)
 - [MCP-Apps Examples](https://github.com/modelcontextprotocol/ext-apps)
-

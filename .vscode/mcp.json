@@ -1,10 +1,10 @@
 {
 	"servers": {
-		"visuals-mcp": {
+		"visuals-mcp-local": {
 			"type": "stdio",
 			"command": "node",
 			"args": [
-				"dist/server.js"
+				"dist/server.bundle.mjs"
 			]
 		}
 	},

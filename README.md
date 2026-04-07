@@ -1,6 +1,6 @@
 # MCP Visuals Server
 
-An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **image previews** with metadata, **master-detail views** for browsing collections, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
+An MCP (Model Context Protocol) server that provides interactive visualizations for AI agents. Display data in rich, interactive formats including **tables** with TanStack Table, **charts** with Recharts, **image previews** with metadata, **master-detail views** for browsing collections, **tree views** for hierarchical data, and **customizable lists** with drag-and-drop reordering.
 
 ### Quick Install
 
@@ -22,6 +22,17 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 - **Theme Integration**: Respects VS Code theme colors and fonts
 - **Responsive**: Works on different screen sizes
 - **Generic Data Support**: Accepts any column structure and data types
+
+### Chart Visualization
+
+- **Interactive Charts**: Render line, bar, area, pie, scatter, and composed charts
+- **Multiple Charts Per View**: Show several charts together in vertical, horizontal, or grid layouts
+- **Flexible Series Configuration**: Configure named series, custom colors, stacked bars/areas, and mixed composed charts
+- **Rich Chart Features**: Optional legends, tooltips, grid lines, and dual Y-axes
+- **Export Options**: Copy chart payloads as JSON or CSV directly from the UI
+- **Agent Awareness**: Active chart selection and hover state can be reported back to the host app
+- **Theme Integration**: Respects VS Code theme colors and fonts
+- **Responsive**: Adapts to narrow panels and wider layouts
 
 ### Image Preview
 
@@ -72,6 +83,10 @@ An MCP (Model Context Protocol) server that provides interactive visualizations 
 ![Table Example](doc/table-example.png)
 
 *Interactive table with sorting, filtering, pagination, and row selection*
+
+![Chart Example](doc/screenshots/chart-grid.png)
+
+*Interactive chart dashboard with multiple chart types and grid layout*
 
 ![Master-Detail Example](doc/master-detail-example.png)
 
@@ -137,13 +152,44 @@ visuals-mcp
 # Install dependencies
 npm install
 
-# Build the UI
+# Build all UI bundles and the server
 npm run build
+
+# Optional: rebuild only the chart UI bundle
+npm run build:charts
 
 # Run the server
 npm run serve
 ```
 
+## Chart Tool
+
+Use `display_chart` to render one or more interactive charts in the MCP client.
+
+Supported chart types:
+
+- `line`
+- `bar`
+- `area`
+- `pie`
+- `scatter`
+- `composed`
+
+### Repository Metrics Dashboard Example
+
+Generate fresh metrics first:
+
+```bash
+npm run metrics:repo:write
+```
+
+This writes a snapshot to `doc/repo-metrics.json`.
+
+Then render a dashboard that uses all chart types (`line`, `bar`, `area`, `pie`, `scatter`, `composed`):
+
+
+
+For release-quality docs, always regenerate `doc/repo-metrics.json` right before updating README examples.
 
 
 ### 1. Configure MCP Server
@@ -182,4 +228,6 @@ Contributions welcome! Please open an issue or PR.
 - [MCP Apps Documentation](https://modelcontextprotocol.github.io/ext-apps/api/)
 - [MCP Apps Examples](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples)
 - [TanStack Table Docs](https://tanstack.com/table/latest)
+- [Recharts Documentation](https://recharts.org/)
 - [VS Code MCP Guide](https://code.visualstudio.com/docs/copilot/guides/mcp-developer-guide)
+- [Changelog](CHANGELOG.md)
