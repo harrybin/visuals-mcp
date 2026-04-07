@@ -35,6 +35,22 @@
 			"detail": "Build the chart UI bundle"
 		},
 		{
+			"label": "Run Storybook",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"storybook"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"detail": "Start the Storybook dev server on port 6006",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
 			"label": "Publish to VSCode Marketplace",
 			"type": "shell",
 			"command": "npm",

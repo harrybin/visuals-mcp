@@ -330,6 +330,29 @@ Required order:
 Do not update README dashboard examples from stale or guessed values.
 Do never add such examples as large hardcoded JSON dashboard payload blocks directly in `README.md`; keep examples concise and reference `doc/repo-metrics.json` instead.
 
+## Storybook Update Workflow (Required)
+
+When a task asks to update Storybook according to the latest code changes, you MUST run the repository skill at `.github/skills/storybook-sync/SKILL.md`.
+
+Required order:
+
+1. Update impacted `*.stories.tsx` files for changed components
+2. Build Storybook with `npm run build-storybook`
+3. Validate impacted stories and controls against latest component props/behavior
+4. Ensure tracked Storybook static artifacts are refreshed if required by repository policy
+
+## Changelog And Release Workflow (Required)
+
+When a task asks to update `CHANGELOG.md`, prepare a release, or publish a new version, you MUST run the repository skill at `.github/skills/changelog-release/SKILL.md`.
+
+Required order:
+
+1. Use `package.json` as the source of truth for the release version
+2. Update `CHANGELOG.md` in the repository's existing release-entry format
+3. Run `npm run sync-server-version` when release metadata must stay aligned
+4. Prefer `npm run publish:all` for release publishing
+5. Let `npm run publish:tag` create the matching local annotated git tag `v<version>` after successful publishing
+
 ## Future Enhancements
 
 - Add chart visualizations (bar, line, pie)

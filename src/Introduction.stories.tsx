@@ -2,151 +2,263 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import './app.css';
 
+const componentCards = [
+  {
+    title: 'Table',
+    eyebrow: 'Data exploration',
+    description:
+      'Sortable, filterable tables with pagination, row selection, column controls, and multi-format export.',
+    features: ['Sorting and filters', 'Row selection', 'CSV, TSV, Markdown, PDF export'],
+  },
+  {
+    title: 'Chart',
+    eyebrow: 'Comparisons and trends',
+    description:
+      'Composable chart dashboards with line, bar, area, pie, scatter, and mixed chart support.',
+    features: ['Multiple chart layouts', 'Dual-axis and composed charts', 'JSON, CSV, SVG, JPG export'],
+  },
+  {
+    title: 'Image',
+    eyebrow: 'Visual context',
+    description:
+      'Preview cards for screenshots, diagrams, and photos with optional metadata and responsive sizing.',
+    features: ['Local file and URL support', 'Metadata display', 'Theme-aware framing'],
+  },
+  {
+    title: 'Master Detail',
+    eyebrow: 'Browse collections',
+    description:
+      'A split-pane browser for inspecting records, documents, or entities with focused detail content.',
+    features: ['Selectable master list', 'Horizontal or vertical layout', 'Rich detail panes'],
+  },
+  {
+    title: 'Tree',
+    eyebrow: 'Hierarchical data',
+    description:
+      'Expandable trees for nested structures with icons, metadata, selection, and export helpers.',
+    features: ['Expand and collapse', 'Metadata display', 'Text, HTML, image export'],
+  },
+  {
+    title: 'List',
+    eyebrow: 'Task-like collections',
+    description:
+      'Flexible lists with checkboxes, drag-and-drop ordering, thumbnails, and compact display options.',
+    features: ['Reordering', 'Checkboxes', 'Images and subtext', 'Copy and export-friendly output'],
+  },
+] as const;
+
+const workflowSteps = [
+  'Open a component story from the sidebar and validate the baseline variant.',
+  'Use Controls and Docs to verify props, layout modes, and output states.',
+  'Mirror the same payload shape in the MCP tool once the story looks correct.',
+] as const;
+
+const technologyBadges = ['React 19', 'TypeScript', 'Vite', 'TanStack Table', 'Recharts', 'MCP SDK', 'Zod', 'jsPDF'] as const;
+
 const IntroComponent: React.FC = () => {
   return (
-    <div style={{ padding: '40px', maxWidth: '900px', margin: '0 auto', fontFamily: 'var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)' }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--color-text-primary, #1e1e1e)' }}>
-        MCP Visuals - Interactive Components
-      </h1>
-      
-      <p style={{ fontSize: '1.125rem', marginBottom: '2rem', color: 'var(--color-text-secondary, #666)' }}>
-        A collection of interactive visual components for Model Context Protocol (MCP) applications.
-        These components enable AI agents to display rich, interactive UI elements to users.
-      </p>
+    <div
+      style={{
+        minHeight: '100vh',
+        padding: '48px 28px 72px',
+        background:
+          'radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 28%), radial-gradient(circle at top right, rgba(5, 150, 105, 0.16), transparent 24%), linear-gradient(180deg, var(--color-background-primary, #ffffff) 0%, var(--color-background-secondary, #f5f5f5) 100%)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1120px',
+          margin: '0 auto',
+          fontFamily:
+            'var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+          color: 'var(--color-text-primary, #1e1e1e)',
+        }}
+      >
+        <section
+          style={{
+            display: 'grid',
+            gap: '24px',
+            gridTemplateColumns: 'minmax(0, 1.7fr) minmax(260px, 0.9fr)',
+            alignItems: 'stretch',
+            marginBottom: '32px',
+          }}
+        >
+          <div
+            style={{
+              padding: '32px',
+              borderRadius: '28px',
+              background: 'var(--color-background-primary, rgba(255,255,255,0.92))',
+              border: '1px solid var(--color-border, rgba(148, 163, 184, 0.28))',
+              boxShadow: '0 20px 50px rgba(15, 23, 42, 0.08)',
+            }}
+          >
+            <div
+              style={{
+                display: 'inline-flex',
+                padding: '6px 12px',
+                borderRadius: '999px',
+                marginBottom: '18px',
+                background: 'rgba(37, 99, 235, 0.10)',
+                color: '#1d4ed8',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Storybook Workspace
+            </div>
+            <h1 style={{ fontSize: '3rem', lineHeight: 1.05, margin: '0 0 16px' }}>
+              MCP Visuals for AI-driven UI surfaces
+            </h1>
+            <p
+              style={{
+                margin: 0,
+                maxWidth: '50rem',
+                fontSize: '1.1rem',
+                lineHeight: 1.7,
+                color: 'var(--color-text-secondary, #475569)',
+              }}
+            >
+              This Storybook is the fastest way to validate the interactive components behind the MCP tools exposed by the server. Use it to inspect visual states, compare layouts, and verify payload shapes before wiring them into prompts or tool outputs.
+            </p>
+          </div>
 
-      <div style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem', color: 'var(--color-text-primary, #1e1e1e)' }}>Available Components</h2>
-        
-        <div style={{ display: 'grid', gap: '1.5rem' }}>
-          <ComponentCard
-            icon="📊"
-            title="Table"
-            description="Interactive data tables with TanStack Table featuring sorting, filtering, pagination, row selection, column visibility, and export functionality (CSV, TSV, Markdown, PDF)."
-            features={[
-              'Multi-column sorting',
-              'Column filtering',
-              'Pagination',
-              'Row selection',
-              'Column visibility toggle',
-              'Export to CSV, TSV, Markdown, PDF'
-            ]}
-          />
-          
-          <ComponentCard
-            icon="🖼️"
-            title="Image"
-            description="Image preview cards with metadata display. Supports data URIs and external URLs."
-            features={[
-              'Display images from URLs or data URIs',
-              'Show title and caption',
-              'Display metadata (dimensions, file size, filename)',
-              'Responsive sizing',
-              'Theme-aware styling'
-            ]}
-          />
-          
-          <ComponentCard
-            icon="🌳"
-            title="Tree"
-            description="Interactive tree view for hierarchical data with expand/collapse functionality, node selection, and metadata display."
-            features={[
-              'Expand/collapse nodes',
-              'Node selection',
-              'Metadata display',
-              'Custom icons per node',
-              'Export to Text, HTML, Image'
-            ]}
-          />
-          
-          <ComponentCard
-            icon="📋"
-            title="List"
-            description="Interactive list component with drag-and-drop reordering, checkboxes, images, and metadata support."
-            features={[
-              'Drag-and-drop reordering',
-              'Checkbox support',
-              'Item images',
-              'Compact mode',
-              'Copy to clipboard'
-            ]}
-          />
-        </div>
-      </div>
+          <div
+            style={{
+              padding: '28px',
+              borderRadius: '28px',
+              background: '#0f172a',
+              color: '#e2e8f0',
+              boxShadow: '0 24px 60px rgba(15, 23, 42, 0.18)',
+            }}
+          >
+            <div style={{ fontSize: '0.8rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#93c5fd', marginBottom: '12px' }}>
+              Included views
+            </div>
+            <div style={{ fontSize: '3rem', fontWeight: 700, lineHeight: 1, marginBottom: '12px' }}>6</div>
+            <p style={{ margin: '0 0 18px', lineHeight: 1.7, color: '#cbd5e1' }}>
+              Tables, charts, images, master-detail panels, trees, and lists share the same MCP App patterns, theme handling, and export-oriented workflows.
+            </p>
+            <div style={{ display: 'grid', gap: '10px' }}>
+              {workflowSteps.map((step) => (
+                <div
+                  key={step}
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '14px',
+                    background: 'rgba(148, 163, 184, 0.12)',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {step}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      <div style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem', color: 'var(--color-text-primary, #1e1e1e)' }}>Key Features</h2>
-        <ul style={{ lineHeight: '1.8', color: 'var(--color-text-secondary, #666)' }}>
-          <li><strong>MCP-Apps Pattern:</strong> Implements the Model Context Protocol Apps pattern for rich UI interactions</li>
-          <li><strong>Theme Support:</strong> All components support both light and dark themes</li>
-          <li><strong>Interactive:</strong> Components send state updates back to AI agents via <code>updateModelContext()</code></li>
-          <li><strong>Single-file Bundling:</strong> Each component is bundled into a single HTML file using Vite</li>
-          <li><strong>Accessibility:</strong> Components include ARIA labels and keyboard navigation support</li>
-          <li><strong>Export Functionality:</strong> Multiple export formats (CSV, PDF, HTML, Markdown, etc.)</li>
-        </ul>
-      </div>
+        <section style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '1.85rem', margin: '0 0 16px' }}>Component coverage</h2>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: '18px',
+            }}
+          >
+            {componentCards.map((card) => (
+              <ComponentCard
+                key={card.title}
+                title={card.title}
+                eyebrow={card.eyebrow}
+                description={card.description}
+                features={card.features}
+              />
+            ))}
+          </div>
+        </section>
 
-      <div style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem', color: 'var(--color-text-primary, #1e1e1e)' }}>Technologies</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <TechBadge name="React 19" />
-          <TechBadge name="TypeScript" />
-          <TechBadge name="Vite" />
-          <TechBadge name="TanStack Table" />
-          <TechBadge name="MCP SDK" />
-          <TechBadge name="Zod" />
-          <TechBadge name="jsPDF" />
-        </div>
-      </div>
+        <section
+          style={{
+            display: 'grid',
+            gap: '20px',
+            gridTemplateColumns: 'minmax(0, 1.15fr) minmax(280px, 0.85fr)',
+            marginBottom: '32px',
+          }}
+        >
+          <div
+            style={{
+              padding: '28px',
+              borderRadius: '24px',
+              background: 'var(--color-background-primary, #ffffff)',
+              border: '1px solid var(--color-border, #e2e8f0)',
+            }}
+          >
+            <h2 style={{ fontSize: '1.7rem', margin: '0 0 14px' }}>What this repo optimizes for</h2>
+            <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: 1.8, color: 'var(--color-text-secondary, #475569)' }}>
+              <li>Single-file app bundles that can be embedded directly in MCP UI resources.</li>
+              <li>Interactive states that report back to the model through updateModelContext.</li>
+              <li>Theme-aware layouts that behave well inside constrained VS Code surfaces.</li>
+              <li>Practical export paths for sharing tables, charts, trees, and other visual output.</li>
+            </ul>
+          </div>
 
-      <div style={{ background: 'var(--color-background-secondary, #f5f5f5)', padding: '1.5rem', borderRadius: '8px' }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '0.75rem', color: 'var(--color-text-primary, #1e1e1e)' }}>Getting Started</h2>
-        <p style={{ marginBottom: '1rem', color: 'var(--color-text-secondary, #666)' }}>
-          Explore each component in the sidebar to see various configurations and use cases.
-          Each story demonstrates different features and scenarios.
-        </p>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <a href="https://github.com/harrybin/visuals-mcp" target="_blank" rel="noopener noreferrer" style={{ 
-            display: 'inline-block', 
-            padding: '0.75rem 1.5rem', 
-            background: '#2563eb', 
-            color: 'white', 
-            textDecoration: 'none', 
-            borderRadius: '6px',
-            fontWeight: '600'
-          }}>
-            View on GitHub
-          </a>
-          <a href="https://www.npmjs.com/package/@harrybin/visuals-mcp" target="_blank" rel="noopener noreferrer" style={{ 
-            display: 'inline-block', 
-            padding: '0.75rem 1.5rem', 
-            background: '#059669', 
-            color: 'white', 
-            textDecoration: 'none', 
-            borderRadius: '6px',
-            fontWeight: '600'
-          }}>
-            NPM Package
-          </a>
-        </div>
+          <div
+            style={{
+              padding: '28px',
+              borderRadius: '24px',
+              background: 'var(--color-background-primary, #ffffff)',
+              border: '1px solid var(--color-border, #e2e8f0)',
+            }}
+          >
+            <h2 style={{ fontSize: '1.7rem', margin: '0 0 14px' }}>Stack</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              {technologyBadges.map((badge) => (
+                <TechBadge key={badge} name={badge} />
+              ))}
+            </div>
+            <div style={{ marginTop: '24px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <a href="https://github.com/harrybin/visuals-mcp" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '0.8rem 1.1rem', background: '#2563eb', color: '#ffffff', textDecoration: 'none', borderRadius: '999px', fontWeight: 600 }}>
+                Repository
+              </a>
+              <a href="https://www.npmjs.com/package/visuals-mcp" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '0.8rem 1.1rem', background: '#059669', color: '#ffffff', textDecoration: 'none', borderRadius: '999px', fontWeight: 600 }}>
+                NPM package
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
 };
 
-const ComponentCard: React.FC<{ icon: string; title: string; description: string; features: string[] }> = ({ icon, title, description, features }) => {
+type ComponentCardProps = {
+  title: string;
+  eyebrow: string;
+  description: string;
+  features: readonly string[];
+};
+
+const ComponentCard: React.FC<ComponentCardProps> = ({ title, eyebrow, description, features }) => {
   return (
-    <div style={{ 
-      border: '1px solid var(--color-border, #e0e0e0)', 
-      borderRadius: '8px', 
-      padding: '1.5rem',
-      background: 'var(--color-background-primary, #ffffff)'
-    }}>
-      <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>{icon}</div>
-      <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'var(--color-text-primary, #1e1e1e)' }}>{title}</h3>
-      <p style={{ marginBottom: '1rem', color: 'var(--color-text-secondary, #666)' }}>{description}</p>
-      <ul style={{ marginLeft: '1.25rem', lineHeight: '1.6', color: 'var(--color-text-secondary, #666)' }}>
-        {features.map((feature, index) => (
-          <li key={index}>{feature}</li>
+    <div
+      style={{
+        border: '1px solid var(--color-border, rgba(148, 163, 184, 0.28))',
+        borderRadius: '24px',
+        padding: '24px',
+        background: 'var(--color-background-primary, rgba(255,255,255,0.92))',
+        boxShadow: '0 16px 40px rgba(15, 23, 42, 0.06)',
+      }}
+    >
+      <div style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0f766e', marginBottom: '10px' }}>
+        {eyebrow}
+      </div>
+      <h3 style={{ fontSize: '1.45rem', margin: '0 0 10px', color: 'var(--color-text-primary, #1e1e1e)' }}>{title}</h3>
+      <p style={{ margin: '0 0 14px', lineHeight: 1.7, color: 'var(--color-text-secondary, #475569)' }}>{description}</p>
+      <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.7', color: 'var(--color-text-secondary, #475569)' }}>
+        {features.map((feature) => (
+          <li key={feature}>{feature}</li>
         ))}
       </ul>
     </div>
@@ -155,16 +267,18 @@ const ComponentCard: React.FC<{ icon: string; title: string; description: string
 
 const TechBadge: React.FC<{ name: string }> = ({ name }) => {
   return (
-    <span style={{ 
-      display: 'inline-block', 
-      padding: '0.375rem 0.875rem', 
-      background: 'var(--color-background-secondary, #f5f5f5)', 
-      color: 'var(--color-text-primary, #1e1e1e)', 
-      borderRadius: '20px',
-      fontSize: '0.875rem',
-      fontWeight: '500',
-      border: '1px solid var(--color-border, #e0e0e0)'
-    }}>
+    <span
+      style={{
+        display: 'inline-block',
+        padding: '0.45rem 0.9rem',
+        background: 'var(--color-background-secondary, #f8fafc)',
+        color: 'var(--color-text-primary, #1e1e1e)',
+        borderRadius: '999px',
+        fontSize: '0.875rem',
+        fontWeight: 600,
+        border: '1px solid var(--color-border, #e2e8f0)',
+      }}
+    >
       {name}
     </span>
   );
@@ -177,7 +291,7 @@ const meta: Meta<typeof IntroComponent> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Welcome to MCP Visuals - A collection of interactive visual components for Model Context Protocol applications.',
+        component: 'Welcome page for the MCP Visuals Storybook workspace, covering the current interactive UI surface area and validation workflow.',
       },
     },
   },

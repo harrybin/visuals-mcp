@@ -363,30 +363,3 @@ export const MultipleChartsGrid: Story = {
     },
   },
 };
-
-export const MinimalChart: Story = {
-  args: {
-    chartData: {
-      charts: [
-        {
-          type: "line",
-          data: salesData,
-          xAxisKey: "month",
-          series: [{ dataKey: "sales", name: "Sales" }],
-          height: 300,
-          showLegend: false,
-          showGrid: false,
-        },
-      ],
-    },
-  },
-};
-
-export const EmptyChart: Story = {
-  args: {
-    chartData: {
-      title: "Empty Chart View",
-      charts: [],
-    },
-  },
-};
